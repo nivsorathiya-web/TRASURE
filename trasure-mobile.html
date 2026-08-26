@@ -1,0 +1,2444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>TRASURE Mobile — Premium Industrial Marketplace</title>
+    
+    <!-- Outfit & Plus Jakarta Sans Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Leaflet JS Map CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+    
+    <!-- Mobile App Styles -->
+    <link rel="stylesheet" href="mobile-style.css">
+</head>
+<body>
+
+    <div class="mobile-viewport">
+        <!-- Floating Liquid Glass Background Spheres -->
+        <div class="liquid-glow liquid-1"></div>
+        <div class="liquid-glow liquid-2"></div>
+        <div class="liquid-glow liquid-3"></div>
+        
+        <!-- DYNAMIC APP SPLASH INTRO OVERLAY -->
+        <div id="app-splash-screen" style="position: fixed; inset: 0; background: #090d16; z-index: 100000; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 1; transition: opacity 0.4s ease;">
+            <div id="splash-content-container" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                <img id="splash-emblem" src="logo_emblem.png" style="width: 110px; height: 110px; object-fit: contain; transform: scale(0.6); opacity: 0; filter: invert(1) hue-rotate(180deg) opacity(0.95); transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.8s ease;" alt="TRASURE Emblem">
+                <img id="splash-text" src="logo_text.png" style="width: 180px; height: auto; margin-top: 20px; opacity: 0; transform: translateY(12px); filter: invert(1) hue-rotate(180deg) opacity(0.95); transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.8s ease;" alt="TRASURE Text">
+            </div>
+        </div>
+
+        <!-- DYNAMIC CORPORATE LOGIN OVERLAY -->
+        <div id="mobile-login-overlay">
+            <div class="login-card-mobile" style="opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);">
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <img id="login-console-logo" src="logo_emblem.png" style="width: 48px; height: 48px; object-fit: contain; margin-bottom: 8px; opacity: 0; transition: opacity 0.15s ease;" alt="TRASURE Emblem">
+                    <h3 style="font-size: 1.2rem; color: var(--text-primary); margin-bottom: 2px;">Console Login</h3>
+                    <p style="font-size: 0.72rem; color: var(--text-secondary);">Select plant credentials to enter circular marketplace.</p>
+                </div>
+
+                <div class="login-role-tabs">
+                    <button class="login-role-tab active" id="login-role-tab-buyer" type="button" onclick="setMobileLoginRole('buyer')">Sourcing Buyer</button>
+                    <button class="login-role-tab" id="login-role-tab-seller" type="button" onclick="setMobileLoginRole('seller')">Listing Seller</button>
+                </div>
+
+                <form id="mobile-login-form" onsubmit="handleMobileLogin(event)">
+                    <div class="form-group-mobile" style="margin-bottom: 12px;">
+                        <label class="form-label-mobile">Select Registered Industry</label>
+                        <select id="login-company-select" class="form-control-mobile" style="height: 44px; font-size: 0.78rem; padding: 0 8px;" required>
+                            <!-- Populated dynamically via JS -->
+                        </select>
+                    </div>
+
+                    <div class="form-group-mobile" style="margin-bottom: 16px;">
+                        <label class="form-label-mobile">Portal Access PIN (4 Digits)</label>
+                        <input type="password" id="login-pin-input" class="form-control-mobile" placeholder="••••" maxlength="4" pattern="[0-9]{4}" style="height: 44px; font-size: 1.15rem; font-weight: 700; text-align: center; letter-spacing: 6px;" required>
+                        <div style="font-size: 0.65rem; margin-top: 4px; color: var(--text-muted); text-align: center;">
+                            Use default access PIN code: 1234
+                        </div>
+                    </div>
+
+                    <div class="form-group-mobile" style="margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+                        <input type="checkbox" id="login-whatsapp-check" checked style="width: 18px; height: 18px; accent-color: #25d366; cursor: pointer;">
+                        <label for="login-whatsapp-check" style="font-size: 0.72rem; color: var(--text-secondary); cursor: pointer; user-select: none;">
+                            Enable real-time outbid WhatsApp alerts
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn-mobile btn-mobile-primary" style="width: 100%; height: 44px; min-height: 44px;">
+                        Enter B2B Console
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+        <!-- STICKY APP HEADER -->
+        <header class="mobile-header">
+            <div class="mobile-logo-area">
+                <img src="logo_emblem.png" class="mobile-logo-emblem" alt="TRASURE Emblem">
+                <img src="logo_text.png" class="mobile-logo-text-img" alt="TRASURE Logo">
+            </div>
+            
+            <div class="mobile-header-actions">
+                <span class="header-badge" id="app-onboard-badge">SPCB Pending</span>
+                <button class="theme-toggle-mobile" id="theme-toggle-btn" aria-label="Toggle Theme">
+                    <svg style="width:20px;height:20px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <!-- Moon Icon -->
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- SCREEN CAROUSEL VIEWPORT -->
+        <div class="screens-carousel-wrapper">
+            <div class="screens-carousel-inner" id="screens-carousel-inner">
+                <!-- SCREEN: HOME (🏠) -->
+                <main class="app-screen active" id="screen-home">
+            <div class="mobile-card onboard-banner-mobile">
+                <h2 id="home-welcome-title">India's B2B By-Product Engine</h2>
+                <p>Seamlessly match, blend, route, and clear industrial hazardous lots. Fully compliance audited.</p>
+            </div>
+
+            <!-- Dashboard Stats Grid -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
+                <div class="mobile-card" style="margin-bottom: 0; padding: 12px; text-align: center;">
+                    <div style="font-size: 1.5rem; font-weight: 800; color: var(--accent);" id="stat-tons">2,450t</div>
+                    <div style="font-size: 0.65rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Total Cleared</div>
+                </div>
+                <div class="mobile-card" style="margin-bottom: 0; padding: 12px; text-align: center;">
+                    <div style="font-size: 1.5rem; font-weight: 800; color: var(--accent-teal);" id="stat-active">8 Active</div>
+                    <div style="font-size: 0.65rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Live Auctions</div>
+                </div>
+            </div>
+
+            <!-- Compliance Status Banner -->
+            <div class="mobile-card" style="border-left: 4px solid var(--accent); padding: 12px 16px;">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <div>
+                        <div style="font-weight: 800; font-size: 0.85rem; color: var(--text-primary);">SPCB Verification</div>
+                        <div style="font-size: 0.72rem; color: var(--text-secondary);" id="home-license-status">Awaiting Hazardous Authorization Code</div>
+                    </div>
+                    <span class="badge-mobile gold" id="home-status-badge">Unverified</span>
+                </div>
+            </div>
+
+            <!-- Interactive Circular Manifesto Loop -->
+            <div class="mobile-card">
+                <h3 style="font-size: 0.95rem; margin-bottom: 8px;">🔄 Circular Economy Manifesto</h3>
+                <p style="font-size: 0.78rem; color: var(--text-secondary); margin-bottom: 12px;">Tap nodes to review B2B verification checkpoints.</p>
+                
+                <div class="circular-loop-mobile">
+                    <!-- Manifesto Loop Diagram -->
+                    <svg viewBox="0 0 200 200" style="width: 100%; height: 100%; transform: rotate(-90deg);">
+                        <circle cx="100" cy="100" r="70" stroke="var(--border-color)" stroke-width="4" fill="none" stroke-dasharray="8 4"></circle>
+                        
+                        <!-- Connecting Line Highlight -->
+                        <circle cx="100" cy="100" r="70" stroke="var(--accent)" stroke-width="4" fill="none" stroke-dasharray="110 330" id="manifesto-flow" style="transition: stroke-dasharray 0.5s ease-in-out;"></circle>
+                    </svg>
+
+                    <!-- Interactive nodes overlapping -->
+                    <div onclick="selectManifesto(1)" class="loop-node active-node" id="node-1" style="position: absolute; top: -6px; left: 50%; transform: translateX(-50%);">
+                        ♻️ 1. SPCB Onboard
+                    </div>
+                    <div onclick="selectManifesto(2)" class="loop-node" id="node-2" style="position: absolute; top: 50%; right: 4px; transform: translateY(-50%);">
+                        🧪 2. Blending
+                    </div>
+                    <div onclick="selectManifesto(3)" class="loop-node" id="node-3" style="position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%);">
+                        📄 3. Manifest
+                    </div>
+                    <div onclick="selectManifesto(4)" class="loop-node" id="node-4" style="position: absolute; top: 50%; left: 4px; transform: translateY(-50%);">
+                        🔨 4. Auction
+                    </div>
+                </div>
+
+                <div class="mobile-card manifesto-desc-card" id="manifesto-desc-card">
+                    <div class="manifesto-desc-header">
+                        <span class="manifesto-desc-indicator"></span>
+                        <strong id="manifesto-title">1. SPCB Authorization check</strong>
+                    </div>
+                    <p id="manifesto-body">Validates that both the listing consignor and buying consignee hold active, validated State Pollution Control Board licenses before letting them trade.</p>
+                </div>
+            </div>
+
+            <!-- Three Steps to Circular Symbiosis Section -->
+            <div class="mobile-card" style="margin-top: 16px;">
+                <span class="badge-mobile green" style="margin-bottom: 6px; display: inline-block;">Operations</span>
+                <h3 style="font-size: 0.95rem; margin-bottom: 4px;">Three Steps to Circular Symbiosis</h3>
+                <p style="font-size: 0.72rem; color: var(--text-secondary); margin-bottom: 12px;">Connecting supply chains through dynamic logistics accounting.</p>
+                
+                <div class="symbiosis-timeline">
+                    <div class="timeline-step">
+                        <div class="timeline-step-badge">1</div>
+                        <div class="timeline-step-content">
+                            <h4>Onboard & Register</h4>
+                            <p>Verify your facility with GSTIN and set up shipping hub GPS coordinates.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-step">
+                        <div class="timeline-step-badge">2</div>
+                        <div class="timeline-step-content">
+                            <h4>List or Search Lots</h4>
+                            <p>Sellers list secondary material specifications. Buyers search with chemical purity filters.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-step">
+                        <div class="timeline-step-badge">3</div>
+                        <div class="timeline-step-content">
+                            <h4>Landed Cost Engine</h4>
+                            <p>Automate freight, route calculations, and SPCB compliance clearing dynamically.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Live Market Price Index Section -->
+            <div class="mobile-card" style="padding: 16px 12px;">
+                <span class="badge-mobile green" style="margin-bottom: 6px; display: inline-block;">📊 Live Index</span>
+                <h3 style="font-size: 0.95rem; margin-bottom: 4px;">Live Market Price Index</h3>
+                <p style="font-size: 0.72rem; color: var(--text-secondary); margin-bottom: 12px;">Real-time cleared transaction values of by-product lot auctions.</p>
+                
+                <div class="market-index-table-card">
+                    <table class="market-index-table">
+                        <thead>
+                            <tr>
+                                <th>Class & Material</th>
+                                <th>Purity</th>
+                                <th>Price</th>
+                                <th>Hub</th>
+                                <th style="text-align: right;">Premium</th>
+                            </tr>
+                        </thead>
+                        <tbody id="market-index-tbody">
+                            <!-- Populated dynamically via renderMarketPriceIndex() -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+
+        <!-- SCREEN: EXPLORE (🔍) -->
+        <main class="app-screen" id="screen-explore">
+            <!-- Search & Filter Chips -->
+            <div style="margin-bottom: 12px;">
+                <input type="text" placeholder="Search sulphuric acid, fly ash..." class="form-control-mobile" style="margin-bottom: 12px; height: 44px; border-radius: 22px; padding: 0 16px;">
+                
+                <div class="scroll-chips-container">
+                    <button class="filter-chip-mobile active" onclick="filterCategory('all')">All Lots</button>
+                    <button class="filter-chip-mobile" onclick="filterCategory('chemical')">Chemicals & Solvents</button>
+                    <button class="filter-chip-mobile" onclick="filterCategory('metal')">Metals & Mining</button>
+                    <button class="filter-chip-mobile" onclick="filterCategory('mineral')">Minerals & Construction</button>
+                    <button class="filter-chip-mobile" onclick="filterCategory('biomass')">Biomass & Organic</button>
+                    <button class="filter-chip-mobile" onclick="filterCategory('paper')">Paper & Cellulose</button>
+                    <button class="filter-chip-mobile" onclick="filterCategory('glass')">Glass & Ceramics</button>
+                    <button class="filter-chip-mobile" onclick="filterCategory('rubber')">Rubbers & Plastics</button>
+                </div>
+            </div>
+
+            <!-- Vertically Stacked Product Cards -->
+            <div id="product-list-container">
+                <!-- Lot Card 1 -->
+                <div class="mobile-card item-card-mobile" data-cat="chemical">
+                    <div class="item-card-header">
+                        <div>
+                            <div class="item-card-title">Spent Sulphuric Acid</div>
+                            <div class="item-card-seller">Surat Chemical Hub (14.2 km)</div>
+                        </div>
+                        <span class="badge-mobile green">Purity 78%</span>
+                    </div>
+                    <div class="item-card-badges">
+                        <span class="badge-mobile blue">SPCB Verified</span>
+                        <span class="badge-mobile gold">High Purity</span>
+                    </div>
+                    <div class="item-card-metrics">
+                        <div class="metric-box-mobile">
+                            <span class="metric-label-mobile">Base Price</span>
+                            <span class="metric-val-mobile">₹4,200/t</span>
+                        </div>
+                        <div class="metric-box-mobile">
+                            <span class="metric-label-mobile">Quantity</span>
+                            <span class="metric-val-mobile">240 MT</span>
+                        </div>
+                        <div class="metric-box-mobile">
+                            <span class="metric-label-mobile">Freight</span>
+                            <span class="metric-val-mobile">₹2.10/km/t</span>
+                        </div>
+                    </div>
+                    <div class="item-card-actions">
+                        <button class="btn-mobile btn-mobile-primary" onclick="openAuctionModal('Spent Sulphuric Acid', 4200, 240, 2.10)">
+                            ⚡ Join Auction
+                        </button>
+                        <button class="btn-mobile btn-mobile-secondary" onclick="openRoutingSheet('Surat Chemical Hub', 21.1764, 72.8223)">
+                            📍 Map
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Lot Card 2 -->
+                <div class="mobile-card item-card-mobile" data-cat="mineral">
+                    <div class="item-card-header">
+                        <div>
+                            <div class="item-card-title">Fly Ash F-Grade</div>
+                            <div class="item-card-seller">GIPCL Power Plant (52.6 km)</div>
+                        </div>
+                        <span class="badge-mobile green">Purity 65%</span>
+                    </div>
+                    <div class="item-card-badges">
+                        <span class="badge-mobile blue">SPCB Verified</span>
+                    </div>
+                    <div class="item-card-metrics">
+                        <div class="metric-box-mobile">
+                            <span class="metric-label-mobile">Base Price</span>
+                            <span class="metric-val-mobile">₹950/t</span>
+                        </div>
+                        <div class="metric-box-mobile">
+                            <span class="metric-label-mobile">Quantity</span>
+                            <span class="metric-val-mobile">500 MT</span>
+                        </div>
+                        <div class="metric-box-mobile">
+                            <span class="metric-label-mobile">Freight</span>
+                            <span class="metric-val-mobile">₹1.80/km/t</span>
+                        </div>
+                    </div>
+                    <div class="item-card-actions">
+                        <button class="btn-mobile btn-mobile-primary" onclick="openAuctionModal('Fly Ash F-Grade', 950, 500, 1.80)">
+                            ⚡ Join Auction
+                        </button>
+                        <button class="btn-mobile btn-mobile-secondary" onclick="openRoutingSheet('GIPCL Power Plant', 21.3912, 72.9515)">
+                            📍 Map
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Lot Card 3 -->
+                <div class="mobile-card item-card-mobile" data-cat="mineral">
+                    <div class="item-card-header">
+                        <div>
+                            <div class="item-card-title">Phosphogypsum Lot</div>
+                            <div class="item-card-seller">IFFCO Fertilizer Plant (128.4 km)</div>
+                        </div>
+                        <span class="badge-mobile green">Purity 82%</span>
+                    </div>
+                    <div class="item-card-badges">
+                        <span class="badge-mobile blue">SPCB Verified</span>
+                        <span class="badge-mobile gold">Premium</span>
+                    </div>
+                    <div class="item-card-metrics">
+                        <div class="metric-box-mobile">
+                            <span class="metric-label-mobile">Base Price</span>
+                            <span class="metric-val-mobile">₹1,400/t</span>
+                        </div>
+                        <div class="metric-box-mobile">
+                            <span class="metric-label-mobile">Quantity</span>
+                            <span class="metric-val-mobile">350 MT</span>
+                        </div>
+                        <div class="metric-box-mobile">
+                            <span class="metric-label-mobile">Freight</span>
+                            <span class="metric-val-mobile">₹2.40/km/t</span>
+                        </div>
+                    </div>
+                    <div class="item-card-actions">
+                        <button class="btn-mobile btn-mobile-primary" onclick="openAuctionModal('Phosphogypsum Lot', 1400, 350, 2.40)">
+                            ⚡ Join Auction
+                        </button>
+                        <button class="btn-mobile btn-mobile-secondary" onclick="openRoutingSheet('IFFCO Fertilizer Plant', 21.6234, 72.6315)">
+                            📍 Map
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Lot Card 4 (Metal) -->
+                <div class="mobile-card item-card-mobile" data-cat="metal">
+                    <div class="item-card-header">
+                        <div>
+                            <div class="item-card-title">Mill Scale Lot</div>
+                            <div class="item-card-seller">Tata Steel Ltd (450 km)</div>
+                        </div>
+                        <span class="badge-mobile green">Purity 95%</span>
+                    </div>
+                    <div class="item-card-badges">
+                        <span class="badge-mobile blue">SPCB Verified</span>
+                    </div>
+                    <div class="item-card-metrics">
+                        <div class="metric-box-mobile">
+                            <span class="metric-label-mobile">Base Price</span>
+                            <span class="metric-val-mobile">₹5,200/t</span>
+                        </div>
+                        <div class="metric-box-mobile">
+                            <span class="metric-label-mobile">Quantity</span>
+                            <span class="metric-val-mobile">350 MT</span>
+                        </div>
+                        <div class="metric-box-mobile">
+                            <span class="metric-label-mobile">Freight</span>
+                            <span class="metric-val-mobile">₹3.10/km/t</span>
+                        </div>
+                    </div>
+                    <div class="item-card-actions">
+                        <button class="btn-mobile btn-mobile-primary" onclick="openAuctionModal('Mill Scale Lot', 5200, 350, 3.10)">
+                            ⚡ Join Auction
+                        </button>
+                        <button class="btn-mobile btn-mobile-secondary" onclick="openRoutingSheet('Tata Steel Jamshedpur', 22.8046, 86.2029)">
+                            📍 Map
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Lot Card 5 (Biomass) -->
+                <div class="mobile-card item-card-mobile" data-cat="biomass">
+                    <div class="item-card-header">
+                        <div>
+                            <div class="item-card-title">Sugar Bagasse Lot</div>
+                            <div class="item-card-seller">Sahakari Sugar Plant (34 km)</div>
+                        </div>
+                        <span class="badge-mobile green">Purity 88%</span>
+                    </div>
+                    <div class="item-card-badges">
+                        <span class="badge-mobile blue">SPCB Verified</span>
+                        <span class="badge-mobile gold">Eco Friendly</span>
+                    </div>
+                    <div class="item-card-metrics">
+                        <div class="metric-box-mobile">
+                            <span class="metric-label-mobile">Base Price</span>
+                            <span class="metric-val-mobile">₹1,100/t</span>
+                        </div>
+                        <div class="metric-box-mobile">
+                            <span class="metric-label-mobile">Quantity</span>
+                            <span class="metric-val-mobile">600 MT</span>
+                        </div>
+                        <div class="metric-box-mobile">
+                            <span class="metric-label-mobile">Freight</span>
+                            <span class="metric-val-mobile">₹2.20/km/t</span>
+                        </div>
+                    </div>
+                    <div class="item-card-actions">
+                        <button class="btn-mobile btn-mobile-primary" onclick="openAuctionModal('Sugar Bagasse Lot', 1100, 600, 2.20)">
+                            ⚡ Join Auction
+                        </button>
+                        <button class="btn-mobile btn-mobile-secondary" onclick="openRoutingSheet('Sahakari Sugar Bardoli', 21.1197, 73.1126)">
+                            📍 Map
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Lot Card 6 (Paper) -->
+                <div class="mobile-card item-card-mobile" data-cat="paper">
+                    <div class="item-card-header">
+                        <div>
+                            <div class="item-card-title">Bleached Pulp Lot</div>
+                            <div class="item-card-seller">JK Paper Ltd (78 km)</div>
+                        </div>
+                        <span class="badge-mobile green">Purity 90%</span>
+                    </div>
+                    <div class="item-card-badges">
+                        <span class="badge-mobile blue">SPCB Verified</span>
+                    </div>
+                    <div class="item-card-metrics">
+                        <div class="metric-box-mobile">
+                            <span class="metric-label-mobile">Base Price</span>
+                            <span class="metric-val-mobile">₹34,000/t</span>
+                        </div>
+                        <div class="metric-box-mobile">
+                            <span class="metric-label-mobile">Quantity</span>
+                            <span class="metric-val-mobile">150 MT</span>
+                        </div>
+                        <div class="metric-box-mobile">
+                            <span class="metric-label-mobile">Freight</span>
+                            <span class="metric-val-mobile">₹4.50/km/t</span>
+                        </div>
+                    </div>
+                    <div class="item-card-actions">
+                        <button class="btn-mobile btn-mobile-primary" onclick="openAuctionModal('Bleached Pulp Lot', 34000, 150, 4.50)">
+                            ⚡ Join Auction
+                        </button>
+                        <button class="btn-mobile btn-mobile-secondary" onclick="openRoutingSheet('JK Paper Songadh', 21.1683, 73.6067)">
+                            📍 Map
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Lot Card 7 (Glass) -->
+                <div class="mobile-card item-card-mobile" data-cat="glass">
+                    <div class="item-card-header">
+                        <div>
+                            <div class="item-card-title">Crushed Glass Cullet</div>
+                            <div class="item-card-seller">HNG Float Glass (192 km)</div>
+                        </div>
+                        <span class="badge-mobile green">Purity 96%</span>
+                    </div>
+                    <div class="item-card-badges">
+                        <span class="badge-mobile blue">SPCB Verified</span>
+                    </div>
+                    <div class="item-card-metrics">
+                        <div class="metric-box-mobile">
+                            <span class="metric-label-mobile">Base Price</span>
+                            <span class="metric-val-mobile">₹2,800/t</span>
+                        </div>
+                        <div class="metric-box-mobile">
+                            <span class="metric-label-mobile">Quantity</span>
+                            <span class="metric-val-mobile">400 MT</span>
+                        </div>
+                        <div class="metric-box-mobile">
+                            <span class="metric-label-mobile">Freight</span>
+                            <span class="metric-val-mobile">₹2.80/km/t</span>
+                        </div>
+                    </div>
+                    <div class="item-card-actions">
+                        <button class="btn-mobile btn-mobile-primary" onclick="openAuctionModal('Crushed Glass Cullet', 2800, 400, 2.80)">
+                            ⚡ Join Auction
+                        </button>
+                        <button class="btn-mobile btn-mobile-secondary" onclick="openRoutingSheet('HNG Float Halol', 22.5029, 73.4682)">
+                            📍 Map
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Lot Card 8 (Rubber) -->
+                <div class="mobile-card item-card-mobile" data-cat="rubber">
+                    <div class="item-card-header">
+                        <div>
+                            <div class="item-card-title">Crumb Rubber Granules</div>
+                            <div class="item-card-seller">Gujarat Rubber Div (62 km)</div>
+                        </div>
+                        <span class="badge-mobile green">Purity 91%</span>
+                    </div>
+                    <div class="item-card-badges">
+                        <span class="badge-mobile blue">SPCB Verified</span>
+                        <span class="badge-mobile gold">High Grade</span>
+                    </div>
+                    <div class="item-card-metrics">
+                        <div class="metric-box-mobile">
+                            <span class="metric-label-mobile">Base Price</span>
+                            <span class="metric-val-mobile">₹14,500/t</span>
+                        </div>
+                        <div class="metric-box-mobile">
+                            <span class="metric-label-mobile">Quantity</span>
+                            <span class="metric-val-mobile">120 MT</span>
+                        </div>
+                        <div class="metric-box-mobile">
+                            <span class="metric-label-mobile">Freight</span>
+                            <span class="metric-val-mobile">₹2.90/km/t</span>
+                        </div>
+                    </div>
+                    <div class="item-card-actions">
+                        <button class="btn-mobile btn-mobile-primary" onclick="openAuctionModal('Crumb Rubber Granules', 14500, 120, 2.90)">
+                            ⚡ Join Auction
+                        </button>
+                        <button class="btn-mobile btn-mobile-secondary" onclick="openRoutingSheet('Gujarat Rubber Ankleshwar', 21.6264, 73.0163)">
+                            📍 Map
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sourcing Purity Blending Calculator Card -->
+            <div class="mobile-card">
+                <h3 style="font-size: 0.95rem; margin-bottom: 4px;">🧪 Purity Blending Calculator</h3>
+                <p style="font-size: 0.72rem; color: var(--text-secondary); margin-bottom: 12px;">Blend multiple seller lots to check standard SPCB/CPCB compliance metrics.</p>
+                
+                <div id="lot-slots-accumulator" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;">
+                    <div class="lot-accumulator-slot">
+                        <select class="slot-select" onchange="calculateBlend()">
+                            <option value="" disabled>Select Lot</option>
+                            <option value="78" selected>Spent Sulphuric Acid (78%)</option>
+                            <option value="65">Fly Ash F-Grade (65%)</option>
+                            <option value="82">Phosphogypsum Lot (82%)</option>
+                            <option value="95">Mill Scale Lot (95%)</option>
+                            <option value="88">Sugar Bagasse Lot (88%)</option>
+                            <option value="90">Bleached Pulp Lot (90%)</option>
+                            <option value="96">Crushed Glass Cullet (96%)</option>
+                            <option value="91">Crumb Rubber Granules (91%)</option>
+                        </select>
+                        <input type="number" value="100" class="slot-input" oninput="calculateBlend()">
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+                    <button class="btn-mobile btn-mobile-secondary" onclick="addBlendSlot()" style="flex: 1; height: 32px; font-size: 0.75rem; padding: 0;">➕ Add Lot</button>
+                    <button class="btn-mobile btn-mobile-secondary" onclick="resetBlend()" style="flex: 1; height: 32px; font-size: 0.75rem; padding: 0;">🔄 Reset</button>
+                </div>
+
+                <div style="background-color: var(--bg-primary); border-radius: 8px; padding: 12px; display: flex; flex-direction: column; gap: 6px;">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.8rem;">
+                        <span>Total Blended Quantity:</span>
+                        <strong id="blend-total-qty">100 MT</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 0.8rem;">
+                        <span>Weighted Average Purity:</span>
+                        <strong id="blend-purity" style="color: var(--accent);">78.00%</strong>
+                    </div>
+                    <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 6px 0;">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.8rem; align-items: center;">
+                        <span>Sourcing Approval Status:</span>
+                        <span class="badge-mobile green" id="blend-badge" style="font-size: 0.62rem; padding: 3px 8px; border-radius: 4px; font-weight: 600;">Standard Approved</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- SCREEN: POST LOT / REGULATORY (➕) -->
+        <main class="app-screen" id="screen-post">
+            <!-- SPCB Onboarding & Plant Registration Card -->
+            <div class="mobile-card" style="border-top: 3px solid var(--accent-teal);">
+                <h3 style="font-size: 0.95rem; margin-bottom: 4px;">🏢 Plant Facility Registration</h3>
+                <p style="font-size: 0.72rem; color: var(--text-secondary); margin-bottom: 12px;">Register your facility and verify GSTIN tax identification.</p>
+                
+                <div class="form-group-mobile" style="margin-bottom: 8px;">
+                    <label class="form-label-mobile">Account Workspace Role</label>
+                    <select id="plant-reg-role" class="form-control-mobile" style="height: 40px; font-size: 0.78rem; padding: 0 8px;">
+                        <option value="both">Both (Buyer & Seller Profiles)</option>
+                        <option value="buyer">Buyer (Procuring Raw Inputs)</option>
+                        <option value="seller">Seller (Supplying Co-products)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group-mobile" style="margin-bottom: 8px;">
+                    <label class="form-label-mobile">Plant / Facility Name</label>
+                    <input type="text" placeholder="e.g. Surat Chemical Hub" id="plant-reg-name" class="form-control-mobile" style="height: 40px; font-size: 0.78rem;">
+                </div>
+                
+                <div class="form-group-mobile" style="margin-bottom: 8px;">
+                    <label class="form-label-mobile">Industrial Sector</label>
+                    <select id="plant-reg-sector" class="form-control-mobile" style="height: 40px; font-size: 0.78rem; padding: 0 8px;">
+                        <option value="Chemical Manufacturing">Chemical Manufacturing</option>
+                        <option value="Refining & Petrochemicals">Refining & Petrochemicals</option>
+                        <option value="Steel & Metallurgical Smelter">Steel & Metallurgical Smelter</option>
+                        <option value="Thermal Power & Utilities">Thermal Power & Utilities</option>
+                        <option value="Cement & Construction Material">Cement & Construction Material</option>
+                        <option value="Paper & Cellulose Products">Paper & Cellulose Products</option>
+                        <option value="Glass & Ceramics Manufacturing">Glass & Ceramics Manufacturing</option>
+                        <option value="Rubbers & Plastics">Rubbers & Plastics</option>
+                    </select>
+                </div>
+                
+                <div class="form-group-mobile" style="margin-bottom: 12px;">
+                    <label class="form-label-mobile">GSTIN Verification Number</label>
+                    <input type="text" placeholder="e.g. 24AAAAT1234A1Z1" id="plant-reg-gstin" class="form-control-mobile" style="height: 40px; font-size: 0.78rem; font-weight: 700;">
+                    <div style="font-size: 0.65rem; margin-top: 4px; color: var(--text-muted);" id="gstin-feedback">
+                        Format: 15-character alphanumeric GSTIN code
+                    </div>
+                </div>
+                
+                <button class="btn-mobile btn-mobile-primary" style="width: 100%; height: 40px; min-height: 40px;" onclick="validateGSTIN()">
+                    Verify Facility GSTIN
+                </button>
+            </div>
+
+            <!-- SPCB Verification Card (Locked until GSTIN is verified) -->
+            <div class="mobile-card" id="spcb-verification-card" style="border-top: 3px solid var(--accent); opacity: 0.5; pointer-events: none; transition: all 0.3s ease-in-out;">
+                <h3 style="font-size: 0.95rem; margin-bottom: 4px;">🛡️ SPCB Compliance Validation</h3>
+                <p style="font-size: 0.72rem; color: var(--text-secondary); margin-bottom: 16px;">Registered hazardous waste dispatches require valid SPCB License format codes.</p>
+                
+                <div class="form-group-mobile">
+                    <label class="form-label-mobile">SPCB Authorization Code</label>
+                    <input type="text" placeholder="SPCB/HW/SUR/2026/0915" id="spcb-input-mobile" class="form-control-mobile" style="font-weight: 700;">
+                    <div style="font-size: 0.72rem; margin-top: 4px; display: flex; align-items: center; gap: 4px;" id="spcb-validation-feedback">
+                        <span>Format: SPCB/HW/SUR/2026/XXXX</span>
+                    </div>
+                </div>
+
+                <button class="btn-mobile btn-mobile-primary" style="width: 100%;" onclick="validateMobileLicense()">
+                    Verify Regulatory License
+                </button>
+            </div>
+
+            <!-- Printable Form 10 Consignment Manifest Card -->
+            <div class="mobile-card" id="manifest-receipt-card" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <h3 style="font-size: 0.9rem;">🚛 CPCB Form 10 Manifest</h3>
+                    <button class="btn-mobile btn-mobile-secondary" style="height: 28px; padding: 0 10px; font-size: 0.68rem;" onclick="window.print()">Print PDF</button>
+                </div>
+                
+                <div class="mobile-manifest-paper">
+                    <div style="text-align: center; border-bottom: 2px double #ea580c; padding-bottom: 4px; font-weight: 800; color: #ea580c;">
+                        HAZARDOUS WASTE CONSIGNMENT MANIFEST
+                    </div>
+                    <div style="margin: 8px 0;">
+                        <strong>1. CONSIGNOR:</strong> Surat Chemical Hub<br>
+                        <strong>SPCB License:</strong> <span id="m-consignor-license">SPCB/HW/SUR/2026/0915</span><br>
+                        <strong>2. CONSIGNEE:</strong> RIL Petrochemical Div<br>
+                        <strong>SPCB License:</strong> SPCB/HW/MUM/2026/4910<br>
+                        <strong>3. CARRIER:</strong> GTE Logistics (GJ-05-BX-4912)<br>
+                        <strong>4. DESC:</strong> Spent Sulphuric Acid (78% Purity)<br>
+                        <strong>5. QUANTITY:</strong> 240 MT Bulk Liquid State<br>
+                        <strong>6. SPILL RESP:</strong> neutralizing reagent sand dike flow.
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- SCREEN: ABOUT COMPANY (ℹ️) -->
+        <main class="app-screen" id="screen-about">
+            <div class="mobile-card onboard-banner-mobile" style="padding: 16px 20px;">
+                <h2>About TRASURE</h2>
+                <p style="font-size: 0.78rem;">India's leading B2B marketplace engineered for circular economy and industrial by-product optimization. One facility's waste is another's resource.</p>
+            </div>
+
+            <!-- Stats Strip (Drawn from Desktop stats-section) -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px;">
+                <div class="mobile-card" style="margin-bottom: 0; padding: 10px; text-align: center;">
+                    <div style="font-size: 1.15rem; font-weight: 800; color: var(--accent);">2,450t+</div>
+                    <div style="font-size: 0.6rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Recovered Streams</div>
+                </div>
+                <div class="mobile-card" style="margin-bottom: 0; padding: 10px; text-align: center;">
+                    <div style="font-size: 1.15rem; font-weight: 800; color: var(--accent-teal);">₹24 Cr+</div>
+                    <div style="font-size: 0.6rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Value Generated</div>
+                </div>
+                <div class="mobile-card" style="margin-bottom: 0; padding: 10px; text-align: center;">
+                    <div style="font-size: 1.15rem; font-weight: 800; color: var(--accent);">50+</div>
+                    <div style="font-size: 0.6rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Verified Facilities</div>
+                </div>
+                <div class="mobile-card" style="margin-bottom: 0; padding: 10px; text-align: center;">
+                    <div style="font-size: 1.15rem; font-weight: 800; color: var(--accent-teal);">12+</div>
+                    <div style="font-size: 0.6rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Connected Cities</div>
+                </div>
+            </div>
+
+            <!-- Core Categories Section (Drawn from Desktop classes list) -->
+            <div class="mobile-card">
+                <span class="badge-mobile green" style="margin-bottom: 6px; display: inline-block;">Sectors</span>
+                <h3 style="font-size: 0.95rem; margin-bottom: 4px;">Core By-Product Classes Hosted</h3>
+                <p style="font-size: 0.72rem; color: var(--text-secondary); margin-bottom: 8px;">Standardized categories representing active trade corridors across India.</p>
+                
+                <div class="about-cat-grid">
+                    <div class="about-cat-card">
+                        <span class="about-cat-icon">🧪</span>
+                        <div class="about-cat-info">
+                            <h4>Chemicals & Solvents</h4>
+                            <p>Spent acids, organic solvents, industrial chemical recoverables.</p>
+                        </div>
+                    </div>
+                    <div class="about-cat-card">
+                        <span class="about-cat-icon">🏗️</span>
+                        <div class="about-cat-info">
+                            <h4>Metals & Mining</h4>
+                            <p>Mill scale, foundry slag, blast furnace dust, metal scraps.</p>
+                        </div>
+                    </div>
+                    <div class="about-cat-card">
+                        <span class="about-cat-icon">🧱</span>
+                        <div class="about-cat-info">
+                            <h4>Minerals & Construction</h4>
+                            <p>Fly ash, phosphogypsum, red mud, concrete aggregates.</p>
+                        </div>
+                    </div>
+                    <div class="about-cat-card">
+                        <span class="about-cat-icon">🌾</span>
+                        <div class="about-cat-info">
+                            <h4>Biomass & Organic</h4>
+                            <p>Sugar bagasse, agricultural pulp residues, biomass briquettes.</p>
+                        </div>
+                    </div>
+                    <div class="about-cat-card">
+                        <span class="about-cat-icon">📄</span>
+                        <div class="about-cat-info">
+                            <h4>Paper & Cellulose</h4>
+                            <p>Bleached pulp, black liquor, cellulose waste streams.</p>
+                        </div>
+                    </div>
+                    <div class="about-cat-card">
+                        <span class="about-cat-icon">🏺</span>
+                        <div class="about-cat-info">
+                            <h4>Glass & Ceramics</h4>
+                            <p>Crushed glass cullet, ceramic scrap shards, vitreous wastes.</p>
+                        </div>
+                    </div>
+                    <div class="about-cat-card">
+                        <span class="about-cat-icon">🩹</span>
+                        <div class="about-cat-info">
+                            <h4>Rubbers & Plastics</h4>
+                            <p>Crumb rubber granules, recycled polymer scrap pellets.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Corporate Directory HQ Card -->
+            <div class="mobile-card corporate-hq-card">
+                <span class="badge-mobile blue" style="margin-bottom: 6px; display: inline-block;">🏢 Head Office</span>
+                <h3 style="font-size: 0.95rem; margin-bottom: 4px;">TRASURE Headquarters</h3>
+                
+                <div class="hq-detail-row">
+                    <span>📧</span>
+                    <a href="mailto:contact.trasure@gmail.com" style="color: var(--accent); text-decoration: none; font-weight: 600;">contact.trasure@gmail.com</a>
+                </div>
+                <div class="hq-detail-row">
+                    <span>📞</span>
+                    <a href="tel:+917990096535" style="color: var(--accent); text-decoration: none; font-weight: 600;">+91 7990096535 (NIV Sorathiya, CEO)</a>
+                </div>
+                <div class="hq-detail-row" style="align-items: flex-start;">
+                    <span>📍</span>
+                    <span>7th Floor, Trasure Icon, VIP Road, Vesu, Surat, Gujarat - 395007</span>
+                </div>
+            </div>
+        </main>
+
+        <!-- SCREEN: PROFILE (👤) -->
+        <main class="app-screen" id="screen-profile">
+            <div class="mobile-card" style="text-align: center; padding: 24px 16px;">
+                <div id="profile-avatar" style="width: 80px; height: 80px; border-radius: 50%; background: var(--gradient-green); color: white; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 2.2rem; font-weight: 800;">
+                    SCH
+                </div>
+                <h3 id="profile-company-name" style="font-size: 1.15rem; margin-bottom: 4px;">Surat Chemical Hub</h3>
+                <p id="profile-company-sub" style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 12px;">Surat Industrial Corridor Phase-1</p>
+                <div style="display: inline-block;" class="header-badge" id="profile-compliance-badge">SPCB Pending</div>
+            </div>
+
+            <!-- Profile Settings -->
+            <div class="mobile-card" style="padding: 0;">
+                <div style="padding: 12px 16px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+                    <div style="font-weight: 700; font-size: 0.8rem;">Corporate Sector</div>
+                    <span id="profile-sector" style="font-size: 0.8rem; color: var(--text-secondary);">Chemical Manufacturing</span>
+                </div>
+                <div style="padding: 12px 16px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+                    <div style="font-weight: 700; font-size: 0.8rem;">Corporate GSTIN</div>
+                    <span id="profile-gstin" style="font-size: 0.8rem; color: var(--text-secondary);">24AAAAT1234A1Z1</span>
+                </div>
+                <div style="padding: 12px 16px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+                    <div style="font-weight: 700; font-size: 0.8rem;">Registered City</div>
+                    <span id="profile-city" style="font-size: 0.8rem; color: var(--text-secondary);">Surat</span>
+                </div>
+                <div style="padding: 12px 16px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+                    <div style="font-weight: 700; font-size: 0.8rem;">Primary Email</div>
+                    <span id="profile-email" style="font-size: 0.8rem; color: var(--text-secondary);">dispatch@chemfixindustries.in</span>
+                </div>
+                <div style="padding: 12px 16px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+                    <div style="font-weight: 700; font-size: 0.8rem;">Console Role</div>
+                    <span id="profile-role" style="font-size: 0.8rem; color: var(--text-secondary); text-transform: capitalize;">buyer</span>
+                </div>
+                <div style="padding: 12px 16px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+                    <div style="font-weight: 700; font-size: 0.8rem;">Onboarded Date</div>
+                    <span id="profile-date" style="font-size: 0.8rem; color: var(--text-secondary);">26-Dec-2025</span>
+                </div>
+                <div style="padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;">
+                    <div style="font-weight: 700; font-size: 0.8rem;">SPCB License</div>
+                    <span id="profile-license" style="font-size: 0.8rem; color: var(--text-secondary);">Pending Validation</span>
+                </div>
+            </div>
+
+            <!-- Logout button -->
+            <button onclick="handleMobileLogout()" class="btn-mobile btn-mobile-secondary" style="width: 100%; margin-top: 16px; height: 44px; min-height: 44px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px;">
+                    <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"></path>
+                    <polyline points="16 17 21 12 16 7"></polyline>
+                    <line x1="21" y1="12" x2="9" y2="12"></line>
+                </svg>
+                Log Out Profile
+            </button>
+
+            <!-- Corporate Office & HQ Details -->
+            <div class="mobile-card corporate-hq-card" style="margin-top: 16px;">
+                <span class="badge-mobile blue" style="margin-bottom: 6px; display: inline-block;">🏢 Corporate HQ</span>
+                <h3 style="font-size: 0.95rem; margin-bottom: 4px;">TRASURE Corporate Office</h3>
+                <p style="font-size: 0.72rem; color: var(--text-secondary); margin-bottom: 10px;">B2B Bulk Onboarding, compliance verification audits, or custom API inquiries.</p>
+                
+                <div class="hq-detail-row">
+                    <span>📧</span>
+                    <a href="mailto:contact.trasure@gmail.com" style="color: var(--accent); text-decoration: none; font-weight: 600;">contact.trasure@gmail.com</a>
+                </div>
+                <div class="hq-detail-row">
+                    <span>📞</span>
+                    <a href="tel:+917990096535" style="color: var(--accent); text-decoration: none; font-weight: 600;">+91 7990096535 (NIV Sorathiya, Founder & CEO)</a>
+                </div>
+                <div class="hq-detail-row" style="align-items: flex-start;">
+                    <span>📍</span>
+                    <span>7th Floor, Trasure Icon, VIP Road, Vesu, Surat, Gujarat - 395007</span>
+                </div>
+            </div>
+
+            <!-- Verified Plants Directory Section -->
+            <div class="mobile-card">
+                <span class="badge-mobile green" style="margin-bottom: 6px; display: inline-block;">🛡️ Facility Network</span>
+                <h3 style="font-size: 0.95rem; margin-bottom: 4px;">B2B Verified Plant Directory</h3>
+                <p style="font-size: 0.72rem; color: var(--text-secondary); margin-bottom: 8px;">Active verified industrial hubs cleared in the symbiosis system.</p>
+                
+                <div class="directory-grid-mobile">
+                    <div class="directory-card-mobile">
+                        <div class="directory-card-left">
+                            <span class="directory-card-title">Surat Chemical Hub</span>
+                            <span class="directory-card-meta">Sector: Chemical Manufacturing | GSTIN: 24AAAAT1234A1Z1</span>
+                        </div>
+                        <span class="badge-mobile green" style="font-size: 0.6rem;">Active</span>
+                    </div>
+                    <div class="directory-card-mobile">
+                        <div class="directory-card-left">
+                            <span class="directory-card-title">Tata Steel Ltd</span>
+                            <span class="directory-card-meta">Sector: Metals & Mining | GSTIN: 20BBBBB5678B2Z2</span>
+                        </div>
+                        <span class="badge-mobile green" style="font-size: 0.6rem;">Active</span>
+                    </div>
+                    <div class="directory-card-mobile">
+                        <div class="directory-card-left">
+                            <span class="directory-card-title">UltraTech Cement Ltd</span>
+                            <span class="directory-card-meta">Sector: Cement & Minerals | GSTIN: 22CCCCC9012C3Z3</span>
+                        </div>
+                        <span class="badge-mobile green" style="font-size: 0.6rem;">Active</span>
+                    </div>
+                    <div class="directory-card-mobile">
+                        <div class="directory-card-left">
+                            <span class="directory-card-title">RIL Petrochemical Div</span>
+                            <span class="directory-card-meta">Sector: Refining & Petrochem | GSTIN: 27DDDDD3456D4Z4</span>
+                        </div>
+                        <span class="badge-mobile green" style="font-size: 0.6rem;">Active</span>
+                    </div>
+                    <div class="directory-card-mobile">
+                        <div class="directory-card-left">
+                            <span class="directory-card-title">GIPCL Power Plant</span>
+                            <span class="directory-card-meta">Sector: Utilities & Thermal | GSTIN: 24EEEEE7890E5Z5</span>
+                        </div>
+                        <span class="badge-mobile green" style="font-size: 0.6rem;">Active</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+            </div>
+        </div>
+
+        <!-- DYNAMIC BOTTOM SHEET DRAWER (Leaflet Routing) -->
+        <div class="bottom-sheet-mobile" id="mobile-routing-sheet">
+            <div class="bottom-sheet-header">
+                <div class="bottom-sheet-drag-handle"></div>
+                <button class="bottom-sheet-close" onclick="closeRoutingSheet()">&times;</button>
+            </div>
+            <div class="bottom-sheet-body">
+                <h3 id="sheet-target-title" style="font-size: 0.95rem; margin-bottom: 4px;">Routing Dispatch Details</h3>
+                <p id="sheet-target-dist" style="font-size: 0.72rem; color: var(--text-secondary); margin-bottom: 12px;">OSRM Highway Path: Loading...</p>
+                
+                <!-- Leaflet map -->
+                <div id="mobile-map-container"></div>
+                
+                <div style="background-color: var(--bg-primary); padding: 12px; border-radius: 8px; font-size: 0.78rem;">
+                    <strong>Highway Routing Dispatch Protocol:</strong><br>
+                    Plotting realistic highway route line using OSRM Router. GJ State Logistics trucks are locked to lanes and avoid rural corridors.
+                </div>
+            </div>
+        </div>
+
+        <!-- FULL-SCREEN LIVE AUCTION SIMULATOR MODAL -->
+        <div class="auction-modal-mobile" id="mobile-auction-modal">
+            <header class="auction-header-mobile">
+                <div style="display: flex; flex-direction: column;">
+                    <h3 style="font-size: 0.95rem; color: var(--text-primary);" id="auc-lot-title">Spent Sulphuric Acid</h3>
+                    <span style="font-size: 0.7rem; color: var(--text-muted);" id="auc-lot-info">Quantity: 240 MT | Base: ₹4,200/t</span>
+                </div>
+                <button class="bottom-sheet-close" style="font-size: 2rem;" onclick="closeAuctionModal()">&times;</button>
+            </header>
+
+            <div class="auction-body-mobile">
+                <!-- Auction status header banner -->
+                <div class="auction-status-bar neutral" id="auc-banner-mobile">
+                    ⏳ NEUTRAL: No bids placed yet
+                </div>
+
+                <!-- Count down timer card -->
+                <div class="mobile-card" style="display: flex; justify-content: space-between; align-items: center; background-color: var(--bg-tertiary); padding: 12px 16px;">
+                    <div>
+                        <div style="font-size: 0.65rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Closing Duration</div>
+                        <div style="font-size: 1.15rem; font-weight: 800; color: var(--color-error);" id="auc-clock-mobile">00h 14m 58s</div>
+                    </div>
+                    <div style="width: 80px; height: 6px; background-color: var(--bg-primary); border-radius: 3px; overflow: hidden;">
+                        <div style="width: 85%; height: 100%; background-color: var(--color-error);" id="auc-progress-mobile"></div>
+                    </div>
+                </div>
+
+                <!-- Scrollable bidding log feed -->
+                <div class="auction-log-feed" id="auc-log-feed-mobile">
+                    <!-- Feed items -->
+                    <div class="log-item-mobile">Auction opened. Starting bid pre-fills.</div>
+                </div>
+            </div>
+
+            <!-- Persistent Bidding Controls Dock -->
+            <div class="bid-controls-mobile">
+                <!-- Quick chips increments -->
+                <div class="quick-chips-grid">
+                    <button class="chip-bid-mobile" onclick="incrementBid(50)">+₹50</button>
+                    <button class="chip-bid-mobile" onclick="incrementBid(100)">+₹100</button>
+                    <button class="chip-bid-mobile" onclick="incrementBid(250)">+₹250</button>
+                    <button class="chip-bid-mobile" onclick="incrementBid(500)">+₹500</button>
+                </div>
+                
+                <div class="manual-bid-row-mobile">
+                    <input type="number" id="manual-bid-input-mobile" class="bid-input-mobile" placeholder="₹4,200">
+                    <button class="btn-mobile btn-mobile-primary" style="height: 48px; padding: 0 20px;" onclick="placeManualBid()">
+                        Place Bid
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- WHATSAPP OUTBID ALERTS CHIME TOAST -->
+        <div class="wa-toast-mobile" id="wa-alert-toast" onclick="dismissWaToast()">
+            <svg class="wa-icon-mobile" viewBox="0 0 40 40">
+                <circle cx="20" cy="20" r="20" fill="#25D366"></circle>
+                <path d="M12.5 11.5c-1.5.5-2.2 2-2.2 3.5 0 2.2 1.5 5 4.5 8s5.8 4.5 8 4.5c1.5 0 3-.7 3.5-2.2l1.2-2.5-2.5-1.2-1.2 2.5c-2-.5-4-2.5-4.5-4.5l2.5-1.2-1.2-2.5-2.5 1.2z" fill="#FFFFFF"></path>
+            </svg>
+            <div class="wa-text-mobile">
+                <strong>TRASURE WhatsApp Alert</strong>
+                <span id="wa-alert-body">You have been outbid on Lot. Current leading: ₹4,400/t. Tap to counter.</span>
+            </div>
+        </div>
+
+        <!-- STICKY BOTTOM NAVIGATION BAR -->
+        <nav class="mobile-nav-bar">
+            <div class="nav-active-bubble" id="nav-active-bubble"></div>
+            <a onclick="showScreen('home')" class="nav-item active" id="nav-home">
+                <svg viewBox="0 0 24 24">
+                    <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                </svg>
+                <span>Home</span>
+            </a>
+            <a onclick="showScreen('explore')" class="nav-item" id="nav-explore">
+                <svg viewBox="0 0 24 24">
+                    <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+                <span>Explore</span>
+            </a>
+            <a onclick="showScreen('post')" class="nav-item" id="nav-post">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <span>Post Lot</span>
+            </a>
+            <a onclick="showScreen('about')" class="nav-item" id="nav-about">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+                <span>About Us</span>
+            </a>
+            <a onclick="showScreen('profile')" class="nav-item" id="nav-profile">
+                <svg viewBox="0 0 24 24">
+                    <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                </svg>
+                <span>Profile</span>
+            </a>
+        </nav>
+
+        <!-- SPCB Checking Overlay Spinner -->
+        <div id="spcb-loading-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.65); z-index:10000; display:none; flex-direction:column; align-items:center; justify-content:center; color:white; font-family:var(--font-primary);">
+            <div style="width:48px; height:48px; border:4px solid rgba(255,255,255,0.25); border-top-color:var(--accent); border-radius:50%; animation:spinLoader 1s linear infinite; margin-bottom:16px;"></div>
+            <div style="font-weight:700; font-size:0.95rem;">Checking SPCB Authorization...</div>
+            <div style="font-size:0.75rem; color:rgba(255,255,255,0.7); margin-top:6px;">Querying Hazardous Waste license registry...</div>
+        </div>
+
+        <style>
+            @keyframes spinLoader {
+                to { transform: rotate(360deg); }
+            }
+        </style>
+
+    </div>
+
+    <!-- Leaflet Map JS Library -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    
+    <!-- APP INTERACTIVE SCRIPT LOGIC -->
+    <script>
+    // ── Application Store & State ─────────────────────────────────────
+    let activeScreen = 'home';
+    let themeMode = 'light';
+    let isSpcbVerified = false;
+    let registeredLicense = '';
+    let selectedLoginRole = 'buyer';
+    let loggedInCompany = null;
+
+    // Seeded Companies Database matching desktop app
+    const mockCompaniesDb = [
+        { id: 'c1', name: 'Chemfix Industries Ltd', sector: 'Chemical Manufacturing', city: 'Surat', gstin: '24ETGTM9156A1Z1', email: 'dispatch@chemfixindustries.in', role: 'both', pin: '1234', verified: true, registeredAt: '26-Dec-2025', spcb: 'SPCB/HW/SUR/2026/0915' },
+        { id: 'c2', name: 'Tamil Chem & Acid Ltd', sector: 'Chemical Manufacturing', city: 'Chennai', gstin: '33OAVHV6438A1Z0', email: 'dispatch@tamilchemacid.in', role: 'both', pin: '1234', verified: true, registeredAt: '16-Jun-2025', spcb: 'SPCB/HW/CHE/2026/1120' },
+        { id: 'c3', name: 'Deepak Nitrite Ltd', sector: 'Chemical Manufacturing', city: 'Vadodara', gstin: '24EKIDX0963A1Z0', email: 'dispatch@deepaknitrite.in', role: 'both', pin: '1234', verified: true, registeredAt: '11-Dec-2025', spcb: 'SPCB/HW/VAD/2026/0842' },
+        { id: 'c4', name: 'Aarti Industries Ltd', sector: 'Chemical Manufacturing', city: 'Ankleshwar', gstin: '24KLGOX5343A1Z9', email: 'dispatch@aartiindustries.in', role: 'both', pin: '1234', verified: true, registeredAt: '23-Apr-2025', spcb: 'SPCB/HW/ANK/2026/3041' },
+        { id: 'c10', name: 'Tata Chemicals Ltd', sector: 'Chemical Manufacturing', city: 'Mithapur', gstin: '24PBCDA4592A1Z7', email: 'dispatch@tatachemicals.in', role: 'both', pin: '1234', verified: true, registeredAt: '22-May-2025', spcb: 'SPCB/HW/MIT/2026/4592' },
+        { id: 'c23', name: 'Reliance Industries Ltd', sector: 'Refining & Petrochemicals', city: 'Jamnagar', gstin: '24SCZOT0577A1Z0', email: 'dispatch@relianceindustries.in', role: 'both', pin: '1234', verified: true, registeredAt: '20-Dec-2025', spcb: 'SPCB/HW/JAM/2026/0577' },
+        { id: 'c32', name: 'Tata Steel Ltd', sector: 'Steel & Metallurgical Smelter', city: 'Jamshedpur', gstin: '20QRTLX9764A1Z7', email: 'dispatch@tatasteel.in', role: 'both', pin: '1234', verified: true, registeredAt: '01-Apr-2025', spcb: 'SPCB/HW/JAM/2026/9764' },
+        { id: 'c43', name: 'Adani Power Ltd (Mundra)', sector: 'Thermal Power & Utilities', city: 'Mundhra', gstin: '24WIDOR4330A1Z9', email: 'dispatch@adanipower.in', role: 'both', pin: '1234', verified: true, registeredAt: '03-Aug-2025', spcb: 'SPCB/HW/MUN/2026/4330' }
+    ];
+
+    // Blending Calculator lot listings database
+    const blendLots = [
+        { id: 1, name: "Spent Sulphuric Acid", purity: 78, price: 4200 },
+        { id: 2, name: "Fly Ash F-Grade", purity: 65, price: 950 },
+        { id: 3, name: "Phosphogypsum Lot", purity: 82, price: 1400 }
+    ];
+
+    // Map instances
+    let map = null;
+    let routeLine = null;
+    let lightTiles = null;
+    let darkTiles = null;
+
+    // Auction variables
+    let currentAuction = {
+        title: '',
+        base: 0,
+        currentBid: 0,
+        qty: 0,
+        freight: 0,
+        timerSec: 898 // 14 mins 58 secs
+    };
+    let auctionTimerInterval = null;
+    let competitorBidTimeout = null;
+    let originalMobileBidControlsHTML = null;
+
+    // ── Navigation Manager ──────────────────────────────────────────
+    window.showScreen = function(screenId) {
+        const screens = ['home', 'explore', 'post', 'about', 'profile'];
+        const index = screens.indexOf(screenId);
+        if (index === -1) return;
+
+        // Set targetIndex to trigger a smooth spring physics glide!
+        window.navTargetIndex = index;
+        window.isDraggingNav = false;
+        
+        // Run the spring physics snap animation if the engine is ready
+        if (typeof window.updateAnimLoop === 'function') {
+            if (!window.navAnimationFrameId) {
+                window.updateAnimLoop();
+            }
+        } else {
+            const bubble = document.getElementById('nav-active-bubble');
+            if (bubble) {
+                bubble.style.transform = `translateX(${index * 100}%) scale(1, 1)`;
+                if (typeof window.updateBubbleColor === 'function') {
+                    window.updateBubbleColor(index);
+                }
+            }
+            // Fallback: move the carousel wrapper instantly if animation engine is not active
+            const carouselInner = document.getElementById('screens-carousel-inner');
+            if (carouselInner) {
+                carouselInner.style.transform = `translateX(-${index * 20}%)`;
+            }
+        }
+
+        // Toggles display active classes
+        document.querySelectorAll('.app-screen').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        
+        document.getElementById(`screen-${screenId}`).classList.add('active');
+        document.getElementById(`nav-${screenId}`).classList.add('active');
+        activeScreen = screenId;
+        
+        // Leaflet map container sizing fixes on view activation
+        if (screenId === 'explore' && map) {
+            setTimeout(() => { map.invalidateSize(); }, 200);
+        }
+    };
+
+    window.updateLoginCompanyDropdown = function() {
+        const select = document.getElementById('login-company-select');
+        if (!select) return;
+        select.innerHTML = '';
+        
+        mockCompaniesDb.forEach(comp => {
+            if (selectedLoginRole === 'buyer' && comp.role !== 'buyer' && comp.role !== 'both') return;
+            if (selectedLoginRole === 'seller' && comp.role !== 'seller' && comp.role !== 'both') return;
+            
+            const opt = document.createElement('option');
+            opt.value = comp.name;
+            opt.innerText = `${comp.name} (${comp.city})`;
+            select.appendChild(opt);
+        });
+    };
+
+    window.setMobileLoginRole = function(role) {
+        selectedLoginRole = role;
+        document.querySelectorAll('.login-role-tab').forEach(btn => btn.classList.remove('active'));
+        if (role === 'buyer') {
+            document.getElementById('login-role-tab-buyer').classList.add('active');
+        } else {
+            document.getElementById('login-role-tab-seller').classList.add('active');
+        }
+        updateLoginCompanyDropdown();
+    };
+
+    window.applyLoggedInState = function() {
+        if (!loggedInCompany) return;
+        
+        const complianceBadge = document.getElementById('app-onboard-badge');
+        const profileComplianceBadge = document.getElementById('profile-compliance-badge');
+        const homeStatusBadge = document.getElementById('home-status-badge');
+        const homeLicenseStatus = document.getElementById('home-license-status');
+        
+        document.getElementById('profile-company-name').innerText = loggedInCompany.name;
+        document.getElementById('profile-company-sub').innerText = `${loggedInCompany.city} Facility Portal`;
+        
+        const initials = loggedInCompany.name.split(' ').map(n => n[0]).join('').slice(0, 3).toUpperCase();
+        document.getElementById('profile-avatar').innerText = initials;
+        
+        document.getElementById('profile-sector').innerText = loggedInCompany.sector;
+        document.getElementById('profile-gstin').innerText = loggedInCompany.gstin;
+        document.getElementById('profile-city').innerText = loggedInCompany.city;
+        document.getElementById('profile-email').innerText = loggedInCompany.email;
+        document.getElementById('profile-role').innerText = selectedLoginRole;
+        document.getElementById('profile-date').innerText = loggedInCompany.registeredAt;
+        
+        document.getElementById('plant-reg-name').value = loggedInCompany.name;
+        document.getElementById('plant-reg-sector').value = loggedInCompany.sector;
+        document.getElementById('plant-reg-gstin').value = loggedInCompany.gstin;
+        document.getElementById('plant-reg-role').value = selectedLoginRole === 'buyer' ? 'buyer' : 'seller';
+        
+        if (loggedInCompany.spcb) {
+            isSpcbVerified = true;
+            registeredLicense = loggedInCompany.spcb;
+            
+            complianceBadge.innerText = 'SPCB Active';
+            complianceBadge.style.backgroundColor = 'var(--color-success-bg)';
+            complianceBadge.style.color = 'var(--color-success)';
+            
+            profileComplianceBadge.innerText = 'SPCB Active';
+            profileComplianceBadge.style.backgroundColor = 'var(--color-success-bg)';
+            profileComplianceBadge.style.color = 'var(--color-success)';
+            
+            homeStatusBadge.innerText = 'Authorized';
+            homeStatusBadge.className = 'badge-mobile green';
+            homeLicenseStatus.innerHTML = `SPCB Verified: <strong>${loggedInCompany.spcb}</strong>`;
+            
+            document.getElementById('profile-license').innerText = loggedInCompany.spcb;
+            
+            const spcbInput = document.getElementById('spcb-input-mobile');
+            if (spcbInput) spcbInput.value = loggedInCompany.spcb;
+            
+            const spcbCard = document.getElementById('spcb-verification-card');
+            if (spcbCard) {
+                spcbCard.style.opacity = '1';
+                spcbCard.style.pointerEvents = 'auto';
+            }
+            
+            const mLicense = document.getElementById('m-consignor-license');
+            if (mLicense) mLicense.innerText = loggedInCompany.spcb;
+            const mCard = document.getElementById('manifest-receipt-card');
+            if (mCard) mCard.style.display = 'block';
+        } else {
+            isSpcbVerified = false;
+            registeredLicense = '';
+            
+            complianceBadge.innerText = 'SPCB Pending';
+            complianceBadge.style.backgroundColor = 'rgba(234, 179, 8, 0.15)';
+            complianceBadge.style.color = 'var(--color-warning)';
+            
+            profileComplianceBadge.innerText = 'SPCB Pending';
+            profileComplianceBadge.style.backgroundColor = 'rgba(234, 179, 8, 0.15)';
+            profileComplianceBadge.style.color = 'var(--color-warning)';
+            
+            homeStatusBadge.innerText = 'Unverified';
+            homeStatusBadge.className = 'badge-mobile gold';
+            homeLicenseStatus.innerHTML = 'Awaiting Hazardous Authorization Code';
+            
+            document.getElementById('profile-license').innerText = 'Pending Onboarding';
+            
+            const spcbCard = document.getElementById('spcb-verification-card');
+            if (spcbCard) {
+                spcbCard.style.opacity = '0.5';
+                spcbCard.style.pointerEvents = 'none';
+            }
+            const mCard = document.getElementById('manifest-receipt-card');
+            if (mCard) mCard.style.display = 'none';
+        }
+        
+        isGstinVerified = true;
+        registeredGstin = loggedInCompany.gstin;
+        registeredPlantName = loggedInCompany.name;
+        registeredSector = loggedInCompany.sector;
+        
+        const welcomeTitle = document.getElementById('home-welcome-title');
+        if (welcomeTitle) {
+            welcomeTitle.innerText = `Welcome, ${loggedInCompany.name}`;
+        }
+    };
+
+    window.handleMobileLogin = function(event) {
+        if (event) event.preventDefault();
+        
+        const companyName = document.getElementById('login-company-select').value;
+        const enteredPin = document.getElementById('login-pin-input').value;
+        
+        const company = mockCompaniesDb.find(c => c.name === companyName);
+        if (!company) {
+            alert("Please select a valid registered industry.");
+            return;
+        }
+        
+        if (enteredPin !== '1234' && enteredPin !== company.pin) {
+            alert("✕ Invalid Access PIN. Use default access PIN: 1234");
+            return;
+        }
+        
+        loggedInCompany = company;
+        localStorage.setItem('trasure-mobile-logged-in-company', company.name);
+        localStorage.setItem('trasure-mobile-logged-in-role', selectedLoginRole);
+        
+        applyLoggedInState();
+        
+        const overlay = document.getElementById('mobile-login-overlay');
+        overlay.style.transition = 'opacity 0.3s ease';
+        overlay.style.opacity = '0';
+        setTimeout(() => {
+            overlay.style.display = 'none';
+        }, 300);
+        
+        showScreen('home');
+    };
+
+    window.handleMobileLogout = function() {
+        loggedInCompany = null;
+        localStorage.removeItem('trasure-mobile-logged-in-company');
+        localStorage.removeItem('trasure-mobile-logged-in-role');
+        
+        showScreen('home');
+        
+        const overlay = document.getElementById('mobile-login-overlay');
+        overlay.style.display = 'flex';
+        overlay.style.opacity = '1';
+        
+        document.getElementById('login-pin-input').value = '';
+        
+        isSpcbVerified = true;
+        registeredLicense = 'SPCB/HW/SUR/2026/0915';
+        isGstinVerified = false;
+        registeredGstin = '';
+        registeredPlantName = '';
+        registeredSector = '';
+        
+        const complianceBadge = document.getElementById('app-onboard-badge');
+        complianceBadge.innerText = 'SPCB Pending';
+        complianceBadge.style.backgroundColor = '';
+        complianceBadge.style.color = '';
+        
+        const welcomeTitle = document.getElementById('home-welcome-title');
+        if (welcomeTitle) {
+            welcomeTitle.innerText = "India's B2B By-Product Engine";
+        }
+        
+        document.getElementById('plant-reg-name').value = '';
+        document.getElementById('plant-reg-gstin').value = '';
+        document.getElementById('spcb-input-mobile').value = '';
+        document.getElementById('gstin-feedback').innerHTML = 'Format: 15-character alphanumeric GSTIN code';
+        document.getElementById('spcb-validation-feedback').innerHTML = 'Format: SPCB/HW/SUR/2026/XXXX';
+
+        if (typeof window.runSplashIntroAnimation === 'function') {
+            window.runSplashIntroAnimation();
+        }
+    };
+
+    // Category product filtering chips
+    window.filterCategory = function(cat) {
+        // Chip active toggling
+        const chips = document.querySelectorAll('.filter-chip-mobile');
+        chips.forEach(c => c.classList.remove('active'));
+        event.target.classList.add('active');
+
+        const cards = document.querySelectorAll('#product-list-container .item-card-mobile');
+        cards.forEach(card => {
+            if (cat === 'all' || card.getAttribute('data-cat') === cat) {
+                card.style.display = 'flex';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    };
+
+    // ── Theme Switcher Manager ──────────────────────────────────────
+    function initMobileTheme() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const themeParam = urlParams.get('theme');
+        if (themeParam) {
+            themeMode = themeParam;
+            localStorage.setItem('trasure-theme', themeParam);
+        } else {
+            themeMode = localStorage.getItem('trasure-theme') || 'light';
+        }
+        if (themeMode === 'dark') {
+            document.body.classList.add('dark-theme');
+        } else {
+            document.body.classList.remove('dark-theme');
+        }
+        updateThemeToggleIcon();
+        
+        // Leaflet dynamic tiles toggle
+        if (map) {
+            updateMapTiles();
+        }
+    }
+
+    function updateThemeToggleIcon() {
+        const btn = document.getElementById('theme-toggle-btn');
+        if (themeMode === 'dark') {
+            btn.innerHTML = `<svg style="width:20px;height:20px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path>
+            </svg>`;
+        } else {
+            btn.innerHTML = `<svg style="width:20px;height:20px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+            </svg>`;
+        }
+    }
+
+    document.getElementById('theme-toggle-btn').addEventListener('click', () => {
+        const body = document.body;
+        const isDarkNow = body.classList.toggle('dark-theme');
+        themeMode = isDarkNow ? 'dark' : 'light';
+        localStorage.setItem('trasure-theme', themeMode);
+        updateThemeToggleIcon();
+        updateMapTiles();
+    });
+
+    // ── GSTIN Plant Registration Form Checker ────────────────────────
+    let isGstinVerified = false;
+    let registeredGstin = '';
+    let registeredPlantName = '';
+    let registeredSector = '';
+
+    window.validateGSTIN = function() {
+        const role = document.getElementById('plant-reg-role').value;
+        const name = document.getElementById('plant-reg-name').value.trim();
+        const sector = document.getElementById('plant-reg-sector').value;
+        const gstin = document.getElementById('plant-reg-gstin').value.trim().toUpperCase();
+        
+        const feedback = document.getElementById('gstin-feedback');
+        
+        // Regex validator matching 15-character GSTIN format: e.g. 24AAAAT1234A1Z1
+        const regex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
+        
+        if (!name) {
+            alert("Please enter your Plant / Facility Name.");
+            return;
+        }
+        
+        const spinner = document.getElementById('spcb-loading-overlay');
+        const spinnerText = spinner.querySelector('div:last-child');
+        const originalText = spinnerText ? spinnerText.innerText : '';
+        if (spinnerText) spinnerText.innerText = "Verifying GSTIN Registry...";
+        
+        spinner.style.display = 'flex';
+        
+        setTimeout(() => {
+            spinner.style.display = 'none';
+            if (spinnerText) spinnerText.innerText = originalText;
+            
+            if (regex.test(gstin)) {
+                isGstinVerified = true;
+                registeredGstin = gstin;
+                registeredPlantName = name;
+                registeredSector = sector;
+                
+                // Update profile card details dynamically
+                const profileNameEl = document.querySelector('#screen-profile h3');
+                const profileSectorEl = document.querySelector('#screen-profile p');
+                const profileBadgeEl = document.getElementById('profile-compliance-badge');
+                
+                if (profileNameEl) profileNameEl.innerText = name;
+                if (profileSectorEl) profileSectorEl.innerText = `Sector: ${sector} | GSTIN: ${gstin}`;
+                
+                // Unlock SPCB Verification card
+                const spcbCard = document.getElementById('spcb-verification-card');
+                if (spcbCard) {
+                    spcbCard.style.opacity = '1';
+                    spcbCard.style.pointerEvents = 'auto';
+                }
+                
+                feedback.innerHTML = `<span style="color:var(--color-success); font-weight:700;">✓ Facility GSTIN Verified! SPCB Validation Unlocked.</span>`;
+            } else {
+                isGstinVerified = false;
+                feedback.innerHTML = `<span style="color:var(--color-error); font-weight:700;">✕ Invalid GSTIN format. Must be 15-character alphanumeric GSTIN.</span>`;
+                
+                // Lock SPCB card again
+                const spcbCard = document.getElementById('spcb-verification-card');
+                if (spcbCard) {
+                    spcbCard.style.opacity = '0.5';
+                    spcbCard.style.pointerEvents = 'none';
+                }
+            }
+        }, 1200);
+    };
+
+    // ── Live Market Price Index Renderer ─────────────────────────────
+    let closedAuctionsLog = [
+        { material: 'Spent Sulphuric Acid', class: 'Chemicals', purity: 81, price: 1850, originCity: 'Vadodara', state: 'GJ', biddersCount: 5, premium: 23.3 },
+        { material: 'Fly Ash F-Grade', class: 'Minerals', purity: 92, price: 450, originCity: 'Nagpur', state: 'MH', biddersCount: 3, premium: 12.5 },
+        { material: 'Spent Acetone', class: 'Solvents', purity: 94, price: 16800, originCity: 'Ankleshwar', state: 'GJ', biddersCount: 6, premium: 12.0 },
+        { material: 'Blast Furnace Slag', class: 'Metals', purity: 85, price: 920, originCity: 'Jamshedpur', state: 'JH', biddersCount: 4, premium: 15.0 },
+        { material: 'Spent Catalyst', class: 'Chemicals', purity: 70, price: 85, originCity: 'Jamnagar', state: 'GJ', biddersCount: 4, premium: 13.3 }
+    ];
+
+    window.renderMarketPriceIndex = function() {
+        const tbody = document.getElementById('market-index-tbody');
+        if (!tbody) return;
+        
+        tbody.innerHTML = '';
+        closedAuctionsLog.forEach(item => {
+            const tr = document.createElement('tr');
+            const premiumStr = item.premium > 0 ? `+${item.premium}%` : `${item.premium}%`;
+            tr.innerHTML = `
+                <td><strong>${item.class}</strong><br>${item.material}</td>
+                <td><span class="purity-badge-mobile">${item.purity}%</span></td>
+                <td><strong>₹${item.price.toLocaleString('en-IN')}/t</strong></td>
+                <td>${item.originCity} <span style="font-size: 0.65rem; color: var(--text-muted);">(${item.state})</span></td>
+                <td style="text-align: right;"><span class="premium-badge-mobile">${premiumStr}</span></td>
+            `;
+            tbody.appendChild(tr);
+        });
+    };
+
+    // ── SPCB License Checker Form Validator ──────────────────────────
+    window.validateMobileLicense = function() {
+        const input = document.getElementById('spcb-input-mobile').value.trim();
+        const feedback = document.getElementById('spcb-validation-feedback');
+        
+        // Regex validator matching SPCB/HW/SUR/2026/0915 code sequence
+        const regex = /^SPCB\/HW\/[A-Z]{3}\/2026\/[0-9]{4}$/;
+        
+        // Lock screen for 1.5s check spinner
+        const spinner = document.getElementById('spcb-loading-overlay');
+        spinner.style.display = 'flex';
+
+        setTimeout(() => {
+            spinner.style.display = 'none';
+            
+            if (regex.test(input)) {
+                isSpcbVerified = true;
+                registeredLicense = input;
+                
+                // Success Badge updates
+                document.getElementById('app-onboard-badge').innerText = 'SPCB Active';
+                document.getElementById('app-onboard-badge').style.backgroundColor = 'var(--color-success-bg)';
+                document.getElementById('app-onboard-badge').style.color = 'var(--color-success)';
+                
+                document.getElementById('home-status-badge').innerText = 'Authorized';
+                document.getElementById('home-status-badge').className = 'badge-mobile green';
+                document.getElementById('home-license-status').innerHTML = `SPCB Verified: <strong>${input}</strong>`;
+                
+                document.getElementById('profile-compliance-badge').innerText = 'SPCB Active';
+                document.getElementById('profile-compliance-badge').style.backgroundColor = 'var(--color-success-bg)';
+                document.getElementById('profile-compliance-badge').style.color = 'var(--color-success)';
+                
+                feedback.innerHTML = `<span style="color:var(--color-success); font-weight:700;">✓ License verified successfully! Manifest clearing unlocked.</span>`;
+                
+                // Show manifest receipt
+                document.getElementById('m-consignor-license').innerText = input;
+                document.getElementById('manifest-receipt-card').style.display = 'block';
+                
+            } else {
+                isSpcbVerified = false;
+                feedback.innerHTML = `<span style="color:var(--color-error); font-weight:700;">✕ Invalid Code. Required Format: SPCB/HW/SUR/2026/XXXX</span>`;
+                document.getElementById('manifest-receipt-card').style.display = 'none';
+            }
+        }, 1200);
+    };
+
+    // ── Sourcing Purity Blending calculator Console ─────────────────
+    window.addBlendSlot = function() {
+        const container = document.getElementById('lot-slots-accumulator');
+        const count = container.querySelectorAll('.lot-accumulator-slot').length;
+        
+        if (count >= 5) {
+            alert("Maximum slots reached");
+            return;
+        }
+
+        const div = document.createElement('div');
+        div.className = 'lot-accumulator-slot';
+        div.innerHTML = `
+            <select class="slot-select" onchange="calculateBlend()">
+                <option value="" disabled selected>Select Lot</option>
+                <option value="78">Spent Sulphuric Acid (78%)</option>
+                <option value="65">Fly Ash F-Grade (65%)</option>
+                <option value="82">Phosphogypsum Lot (82%)</option>
+                <option value="95">Mill Scale Lot (95%)</option>
+                <option value="88">Sugar Bagasse Lot (88%)</option>
+                <option value="90">Bleached Pulp Lot (90%)</option>
+                <option value="96">Crushed Glass Cullet (96%)</option>
+                <option value="91">Crumb Rubber Granules (91%)</option>
+            </select>
+            <input type="number" placeholder="Tonnes" class="slot-input" oninput="calculateBlend()">
+        `;
+        container.appendChild(div);
+        calculateBlend();
+    };
+
+    window.resetBlend = function() {
+        document.getElementById('lot-slots-accumulator').innerHTML = `
+            <div class="lot-accumulator-slot">
+                <select class="slot-select" onchange="calculateBlend()">
+                    <option value="" disabled>Select Lot</option>
+                    <option value="78" selected>Spent Sulphuric Acid (78%)</option>
+                    <option value="65">Fly Ash F-Grade (65%)</option>
+                    <option value="82">Phosphogypsum Lot (82%)</option>
+                    <option value="95">Mill Scale Lot (95%)</option>
+                    <option value="88">Sugar Bagasse Lot (88%)</option>
+                    <option value="90">Bleached Pulp Lot (90%)</option>
+                    <option value="96">Crushed Glass Cullet (96%)</option>
+                    <option value="91">Crumb Rubber Granules (91%)</option>
+                </select>
+                <input type="number" value="100" class="slot-input" oninput="calculateBlend()">
+            </div>
+        `;
+        calculateBlend();
+    };
+
+    window.calculateBlend = function() {
+        const slots = document.querySelectorAll('.lot-accumulator-slot');
+        let totalWeight = 0;
+        let weightedPuritySum = 0;
+
+        slots.forEach(slot => {
+            const purity = parseFloat(slot.querySelector('.slot-select').value);
+            const weight = parseFloat(slot.querySelector('.slot-input').value);
+            if (!isNaN(purity) && !isNaN(weight) && weight > 0) {
+                totalWeight += weight;
+                weightedPuritySum += (purity * weight);
+            }
+        });
+
+        const totalQtyEl = document.getElementById('blend-total-qty');
+        const purityEl = document.getElementById('blend-purity');
+        const badgeEl = document.getElementById('blend-badge');
+
+        if (totalWeight > 0) {
+            const avgPurity = weightedPuritySum / totalWeight;
+            totalQtyEl.innerText = `${totalWeight.toFixed(0)} MT`;
+            purityEl.innerText = `${avgPurity.toFixed(2)}%`;
+
+            if (avgPurity >= 80) {
+                badgeEl.innerText = 'Premium Approved';
+                badgeEl.className = 'badge-mobile green';
+            } else if (avgPurity >= 65) {
+                badgeEl.innerText = 'Standard Approved';
+                badgeEl.className = 'badge-mobile green';
+            } else {
+                badgeEl.innerText = 'Low Purity Alert';
+                badgeEl.className = 'badge-mobile gold';
+            }
+        } else {
+            totalQtyEl.innerText = '0 MT';
+            purityEl.innerText = '0.00%';
+            badgeEl.innerText = 'Neutral';
+            badgeEl.className = 'badge-mobile';
+        }
+    };
+
+    // ── Leaflet Road Route Map Sheet ────────────────────────────────
+    function initMobileMap() {
+        if (map) return;
+        // Center around Surat
+        map = L.map('mobile-map-container', { zoomControl: false }).setView([21.1702, 72.8311], 9);
+        
+        lightTiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19
+        });
+        
+        darkTiles = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png', {
+            maxZoom: 19
+        });
+
+        updateMapTiles();
+    }
+
+    function updateMapTiles() {
+        if (!map) return;
+        if (themeMode === 'dark') {
+            if (map.hasLayer(lightTiles)) map.removeLayer(lightTiles);
+            darkTiles.addTo(map);
+        } else {
+            if (map.hasLayer(darkTiles)) map.removeLayer(darkTiles);
+            lightTiles.addTo(map);
+        }
+    }
+
+    window.openRoutingSheet = function(name, lat, lng) {
+        document.getElementById('sheet-target-title').innerText = `OSRM Truck Route: Surat ➔ ${name}`;
+        document.getElementById('sheet-target-dist').innerText = `Winding road route calculation: querying...`;
+        
+        // Show drawer
+        document.getElementById('mobile-routing-sheet').classList.add('active');
+        
+        // Initialize Map
+        setTimeout(() => {
+            initMobileMap();
+            map.invalidateSize();
+            
+            // Surat coordinates
+            const surat = [21.1702, 72.8311];
+            const dest = [lat, lng];
+            
+            // Map icon markers
+            map.eachLayer(layer => {
+                if (layer instanceof L.Marker || layer instanceof L.Polyline) {
+                    map.removeLayer(layer);
+                }
+            });
+            
+            L.marker(surat).addTo(map).bindPopup('Surat HQ (Dispatch)');
+            L.marker(dest).addTo(map).bindPopup(name);
+            
+            // Query OSRM Highway Route path
+            const osrmUrl = `https://router.project-osrm.org/route/v1/driving/${surat[1]},${surat[0]};${lng},${lat}?overview=full&geometries=geojson`;
+            
+            fetch(osrmUrl)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.routes && data.routes.length > 0) {
+                        const route = data.routes[0];
+                        const distKm = route.distance / 1000;
+                        const durationHrs = route.duration / 3600;
+                        
+                        document.getElementById('sheet-target-dist').innerText = `OSRM Route: ${distKm.toFixed(1)} km (~${durationHrs.toFixed(1)} hrs truck drive)`;
+                        
+                        // Parse road polyline coordinates
+                        const coords = route.geometry.coordinates.map(pt => [pt[1], pt[0]]);
+                        if (routeLine) map.removeLayer(routeLine);
+                        routeLine = L.polyline(coords, { color: '#16a34a', weight: 4 }).addTo(map);
+                        map.fitBounds(routeLine.getBounds(), { padding: [20, 20] });
+                    } else {
+                        // Fallback straight line
+                        drawFallbackLine(surat, dest);
+                    }
+                })
+                .catch(() => {
+                    // Fallback straight line
+                    drawFallbackLine(surat, dest);
+                });
+        }, 300);
+    };
+
+    function drawFallbackLine(start, end) {
+        // Haversine fallback calculations
+        const rad = Math.PI / 180;
+        const lat1 = start[0] * rad;
+        const lat2 = end[0] * rad;
+        const dLat = (end[0] - start[0]) * rad;
+        const dLon = (end[1] - start[1]) * rad;
+        
+        const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                  Math.cos(lat1) * Math.cos(lat2) *
+                  Math.sin(dLon/2) * Math.sin(dLon/2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        const distKm = 6371 * c; // Earth radius in km
+
+        document.getElementById('sheet-target-dist').innerText = `OSRM Offline Fallback: ${distKm.toFixed(1)} km direct line`;
+        if (routeLine) map.removeLayer(routeLine);
+        routeLine = L.polyline([start, end], { color: '#0d9488', dashArray: '5, 5', weight: 3 }).addTo(map);
+        map.fitBounds(routeLine.getBounds(), { padding: [20, 20] });
+    }
+
+    window.closeRoutingSheet = function() {
+        document.getElementById('mobile-routing-sheet').classList.remove('active');
+    };
+
+    window.openAuctionModal = function(title, base, qty, freight) {
+        // Auto-login fallback if not logged in
+        if (!loggedInCompany) {
+            const company = mockCompaniesDb[0]; // Chemfix Industries Ltd
+            selectedLoginRole = 'buyer';
+            loggedInCompany = company;
+            applyLoggedInState();
+            const overlay = document.getElementById('mobile-login-overlay');
+            if (overlay) overlay.style.display = 'none';
+        }
+
+        // Backup and restore mobile bidding controls
+        const controls = document.querySelector('.bid-controls-mobile');
+        if (controls) {
+            if (!originalMobileBidControlsHTML) {
+                originalMobileBidControlsHTML = controls.innerHTML;
+            } else {
+                controls.innerHTML = originalMobileBidControlsHTML;
+            }
+        }
+        currentAuction.title = title;
+        currentAuction.base = base;
+        currentAuction.currentBid = base;
+        currentAuction.qty = qty;
+        currentAuction.freight = freight;
+        currentAuction.timerSec = 898;
+        currentAuction.bidCount = 0;
+        currentAuction.targetBids = Math.floor(Math.random() * 2) + 5; // 5 or 6 bids
+        currentAuction.lastBidder = '';
+
+        // Onboard Check
+        if (!isSpcbVerified) {
+            isSpcbVerified = true;
+            registeredLicense = "SPCB/HW/SUR/2026/0915";
+            const onboardBadge = document.getElementById('app-onboard-badge');
+            if (onboardBadge) {
+                onboardBadge.innerText = 'SPCB Active';
+                onboardBadge.style.backgroundColor = 'var(--color-success-bg)';
+                onboardBadge.style.color = 'var(--color-success)';
+            }
+            const statusBadge = document.getElementById('home-status-badge');
+            if (statusBadge) {
+                statusBadge.innerText = 'Authorized';
+                statusBadge.className = 'badge-mobile green';
+            }
+            const licenseStatus = document.getElementById('home-license-status');
+            if (licenseStatus) {
+                licenseStatus.innerHTML = `SPCB Verified: <strong>${registeredLicense}</strong>`;
+            }
+            const complianceBadge = document.getElementById('profile-compliance-badge');
+            if (complianceBadge) {
+                complianceBadge.innerText = 'SPCB Active';
+                complianceBadge.style.backgroundColor = 'var(--color-success-bg)';
+                complianceBadge.style.color = 'var(--color-success)';
+            }
+            const profileLicense = document.getElementById('profile-license');
+            if (profileLicense) {
+                profileLicense.innerText = registeredLicense;
+            }
+        }
+
+        // Header Update
+        document.getElementById('auc-lot-title').innerText = title;
+        document.getElementById('auc-lot-info').innerText = `Quantity: ${qty} MT | Base: ₹${base}/t`;
+
+        // Reset status log
+        const feed = document.getElementById('auc-log-feed-mobile');
+        feed.innerHTML = `<div class="log-item-mobile">Simulated Commodity desk opened. Base bid set to ₹${base}/t.</div>`;
+
+        document.getElementById('manual-bid-input-mobile').value = base + 50;
+        document.getElementById('manual-bid-input-mobile').disabled = false;
+        document.getElementById('auc-banner-mobile').innerText = '⏳ NEUTRAL: No bids placed yet';
+        document.getElementById('auc-banner-mobile').className = 'auction-status-bar neutral';
+        document.getElementById('auc-clock-mobile').style.color = 'var(--color-error)';
+        document.querySelector('.bid-controls-mobile').style.display = 'flex';
+
+        // Toggle Modal Active Class
+        document.getElementById('mobile-auction-modal').classList.add('active');
+
+        // Start Clock countdown interval
+        startAuctionTimer();
+
+        // Start Bidding Feed simulated competitor chip inputs
+        startCompetitorSimulations();
+    };
+
+    window.closeAuctionModal = function() {
+        document.getElementById('mobile-auction-modal').classList.remove('active');
+        clearInterval(auctionTimerInterval);
+        if (competitorBidTimeout) clearTimeout(competitorBidTimeout);
+    };
+
+    function startAuctionTimer() {
+        clearInterval(auctionTimerInterval);
+        auctionTimerInterval = setInterval(() => {
+            currentAuction.timerSec--;
+            if (currentAuction.timerSec <= 0) {
+                clearInterval(auctionTimerInterval);
+                if (competitorBidTimeout) clearTimeout(competitorBidTimeout);
+                document.getElementById('auc-clock-mobile').innerText = "00h 00m 00s";
+                document.getElementById('auc-banner-mobile').innerText = "❌ Lot closed";
+                return;
+            }
+
+            const m = Math.floor(currentAuction.timerSec / 60);
+            const s = currentAuction.timerSec % 60;
+            const mStr = m < 10 ? '0' + m : m;
+            const sStr = s < 10 ? '0' + s : s;
+            document.getElementById('auc-clock-mobile').innerText = `00h ${mStr}m ${sStr}s`;
+
+            // Adjust countdown bar size
+            const pct = (currentAuction.timerSec / 900) * 100;
+            document.getElementById('auc-progress-mobile').style.width = `${pct}%`;
+        }, 1000);
+    }
+
+    // Place Bidding manual/chips
+    window.incrementBid = function(inc) {
+        const input = document.getElementById('manual-bid-input-mobile');
+        const val = parseInt(input.value) || currentAuction.currentBid;
+        input.value = val + inc;
+    };
+
+    window.placeManualBid = function() {
+        const input = document.getElementById('manual-bid-input-mobile');
+        const val = parseInt(input.value);
+
+        if (isNaN(val) || val <= currentAuction.currentBid) {
+            alert(`Bid must exceed current highest bid: ₹${currentAuction.currentBid}`);
+            return;
+        }
+
+        currentAuction.currentBid = val;
+        appendLog(`You placed a bid of ₹${val}/t`, 'self');
+
+        document.getElementById('auc-banner-mobile').innerText = `🏆 LEADING BIDDER: Allocated ${currentAuction.qty} MT at ₹${val}/t`;
+        document.getElementById('auc-banner-mobile').className = 'auction-status-bar leading';
+
+        input.value = val + 50;
+
+        currentAuction.bidCount++;
+        currentAuction.lastBidder = 'self';
+        checkAuctionEnd();
+
+        // Reset simulation timer to fire exactly 4-5 seconds after this bid
+        startCompetitorSimulations();
+    };
+
+    function appendLog(text, type) {
+        const feed = document.getElementById('auc-log-feed-mobile');
+        const item = document.createElement('div');
+        item.className = `log-item-mobile ${type || ''}`;
+        item.innerText = text;
+        feed.appendChild(item);
+        feed.scrollTop = feed.scrollHeight;
+    }
+
+    // Competitor outbid simulation chimes
+    function startCompetitorSimulations() {
+        if (competitorBidTimeout) clearTimeout(competitorBidTimeout);
+        competitorBidTimeout = setTimeout(() => {
+            if (currentAuction.bidCount >= currentAuction.targetBids) return;
+
+            const candidates = mockCompaniesDb.filter(c =>
+                (c.role === 'buyer' || c.role === 'both') &&
+                c.name !== loggedInCompany?.name
+            );
+            const rival = candidates.length > 0 ? candidates[Math.floor(Math.random() * candidates.length)].name : 'Competitor Bidder #2';
+            
+            const inc = [50, 100, 150][Math.floor(Math.random() * 3)];
+            const outbidVal = currentAuction.currentBid + inc;
+            currentAuction.currentBid = outbidVal;
+
+            appendLog(`${rival} placed a bid of ₹${outbidVal}/t`, 'leading');
+            document.getElementById('manual-bid-input-mobile').value = outbidVal + 50;
+
+            // Shift Banner Status to outbid alert
+            document.getElementById('auc-banner-mobile').innerText = `⚠️ OUTBID! Raise price increment to secure allocation`;
+            document.getElementById('auc-banner-mobile').className = 'auction-status-bar outbid';
+
+            // Display slide-in WhatsApp outbid Toast
+            showWaToast(outbidVal);
+
+            currentAuction.bidCount++;
+            currentAuction.lastBidder = rival;
+            checkAuctionEnd();
+
+            // Schedule next bid in exactly 4 to 5 seconds
+            startCompetitorSimulations();
+        }, 4000 + Math.random() * 1000);
+    }
+
+    function checkAuctionEnd() {
+        if (currentAuction.bidCount >= currentAuction.targetBids) {
+            clearInterval(auctionTimerInterval);
+            if (competitorBidTimeout) clearTimeout(competitorBidTimeout);
+
+            const banner = document.getElementById('auc-banner-mobile');
+            const clock = document.getElementById('auc-clock-mobile');
+
+            clock.innerText = "CLOSED";
+            clock.style.color = "var(--text-muted)";
+
+            const winnerDisplay = (currentAuction.lastBidder === 'self') ? `You (${loggedInCompany?.name || 'Chemfix Industries Ltd'})` : currentAuction.lastBidder || 'Competitor Bidder #2';
+
+            if (currentAuction.lastBidder === 'self') {
+                banner.innerText = `🏆 AUCTION WON: Allocated ${currentAuction.qty} MT at ₹${currentAuction.currentBid}/t`;
+                banner.className = 'auction-status-bar leading';
+                appendLog(`🎉 Congratulations! You have won this auction. Final price: ₹${currentAuction.currentBid}/t. SPCB checkouts unlocked.`, 'self');
+            } else {
+                banner.innerText = `❌ AUCTION CLOSED: Won by ${winnerDisplay}`;
+                banner.className = 'auction-status-bar outbid';
+                appendLog(`❌ Auction Closed. ${winnerDisplay} won this lot at ₹${currentAuction.currentBid}/t.`, 'leading');
+            }
+
+            // Disable input and render Award Certificate in place of bidding controls
+            document.getElementById('manual-bid-input-mobile').disabled = true;
+            
+            const controls = document.querySelector('.bid-controls-mobile');
+            if (controls) {
+                controls.innerHTML = `
+                    <div class="award-certificate" style="border: 2px solid var(--accent); background: var(--bg-tertiary); border-radius: 12px; padding: 14px; text-align: center; margin: 10px;">
+                        <span style="font-size: 2rem; display: block; margin-bottom: 6px;">🏆</span>
+                        <h4 style="margin: 0; font-size: 0.95rem; font-weight: 800; color: var(--accent);">LOT OFFICIALLY AWARDED</h4>
+                        <p style="font-size: 0.72rem; color: var(--text-secondary); margin: 6px 0 10px;">
+                            Lot successfully cleared on circular ledger.
+                        </p>
+                        <div style="background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 8px; padding: 8px; font-size: 0.75rem; text-align: left; display: flex; flex-direction: column; gap: 6px;">
+                            <div><strong style="color: var(--text-muted);">Winner:</strong> <span style="color: var(--accent); font-weight: 800;">${winnerDisplay}</span></div>
+                            <div><strong style="color: var(--text-muted);">Clearing Price:</strong> <span style="font-weight: 700;">₹${currentAuction.currentBid.toLocaleString('en-IN')}/t</span></div>
+                            <div><strong style="color: var(--text-muted);">Allocated Qty:</strong> <span style="font-weight: 700;">${currentAuction.qty} MT</span></div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+    }
+
+        // WhatsApp Notification system
+    function showWaToast(bid) {
+        const toast = document.getElementById('wa-alert-toast');
+        document.getElementById('wa-alert-body').innerHTML = `You have been outbid on <strong>${currentAuction.title}</strong> by Bidder #2. Current price is ₹${bid}/t. Tap to counter.`;
+        toast.classList.add('active');
+        
+        // Play notification chime sounds or vibrate
+        if (navigator.vibrate) {
+            navigator.vibrate([100, 50, 100]);
+        }
+        
+        // Auto hide after 5 seconds
+        setTimeout(() => {
+            toast.classList.remove('active');
+        }, 6000);
+    }
+
+    window.dismissWaToast = function() {
+        // Tapping WhatsApp alert counter focuses bid input immediately
+        document.getElementById('wa-alert-toast').classList.remove('active');
+        if (document.getElementById('mobile-auction-modal').classList.contains('active')) {
+            document.getElementById('manual-bid-input-mobile').focus();
+        }
+    };
+
+    // ── Interactive Manifesto Node Switching ────────────────────────
+    const manifestoData = {
+        1: {
+            title: "1. SPCB Onboard Compliance",
+            body: "Validates that both the listing consignor and buying consignee hold active, validated State Pollution Control Board licenses before letting them trade."
+        },
+        2: {
+            title: "2. Weighted average Blending",
+            body: "Calculates total weight averages to optimize by-product grade parameters, helping buyers approve standards compliance for bulk sourcing lots."
+        },
+        3: {
+            title: "3. Printable CPCB Form 10 Manifest",
+            body: "Generates format-compliant emergency instructions, neutralizing reagents guidelines, and carrier codes for secure transport dispatches."
+        },
+        4: {
+            title: "4. Live Auction Desk Bidding",
+            body: "Restructures trading desks into high-frequency mobile chip chips and WhatsApp toasts alerts, giving traders instantaneous counter-bidding actions."
+        }
+    };
+
+    window.selectManifesto = function(id) {
+        // Toggle active class on nodes
+        document.querySelectorAll('.loop-node').forEach(node => {
+            node.classList.remove('active-node');
+            node.style.borderColor = '';
+        });
+        const activeNode = document.getElementById(`node-${id}`);
+        if (activeNode) activeNode.classList.add('active-node');
+        
+        // SVG circle dashes update
+        const arcPct = [110, 220, 330, 440][id-1];
+        document.getElementById('manifesto-flow').setAttribute('stroke-dasharray', `${arcPct} 440`);
+
+        // Card update
+        const data = manifestoData[id];
+        document.getElementById('manifesto-title').innerText = data.title;
+        document.getElementById('manifesto-body').innerText = data.body;
+    };
+
+    // Initialize startup states
+    window.addEventListener('load', () => {
+        initMobileTheme();
+        
+        updateLoginCompanyDropdown();
+        
+        const urlParams = new URLSearchParams(window.location.search);
+        
+        // Auto demo login bypass for headless testing and verification
+        if (urlParams.get('demo_login') === 'true') {
+            const company = mockCompaniesDb[0]; // Chemfix Industries Ltd
+            selectedLoginRole = 'buyer';
+            loggedInCompany = company;
+            applyLoggedInState();
+            document.getElementById('mobile-login-overlay').style.display = 'none';
+            const splash = document.getElementById('app-splash-screen');
+            if (splash) splash.style.display = 'none';
+        } else {
+            const savedCompName = localStorage.getItem('trasure-mobile-logged-in-company');
+            const savedRole = localStorage.getItem('trasure-mobile-logged-in-role');
+            if (savedCompName && savedRole) {
+                const company = mockCompaniesDb.find(c => c.name === savedCompName);
+                if (company) {
+                    selectedLoginRole = savedRole;
+                    loggedInCompany = company;
+                    applyLoggedInState();
+                    
+                    document.getElementById('mobile-login-overlay').style.display = 'none';
+                    const splash = document.getElementById('app-splash-screen');
+                    if (splash) splash.style.display = 'none';
+                }
+            }
+        }
+        
+        // Render Market Price Index dynamically
+        renderMarketPriceIndex();
+        
+        const screenParam = urlParams.get('screen');
+        if (screenParam) {
+            showScreen(screenParam);
+        }
+        
+        if (urlParams.get('demo_spcb') === 'true') {
+            // Also auto-verify GSTIN for demo mode to keep testing streamlined
+            document.getElementById('plant-reg-name').value = 'Surat Chemical Hub';
+            document.getElementById('plant-reg-gstin').value = '24AAAAT1234A1Z1';
+            validateGSTIN();
+            
+            setTimeout(() => {
+                document.getElementById('spcb-input-mobile').value = 'SPCB/HW/SUR/2026/0915';
+                validateMobileLicense();
+            }, 1500);
+        }
+        
+        calculateBlend();
+
+        // ── Drag & Slide Bottom Navigation Bar Bubble (Lerp Smooth Glide) ──
+        const screens = ['home', 'explore', 'post', 'about', 'profile'];
+        const carouselInner = document.getElementById('screens-carousel-inner');
+        const bubble = document.getElementById('nav-active-bubble');
+        const navBar = document.querySelector('.mobile-nav-bar');
+        // Expose parameters globally on the window to prevent click-drag race conditions
+        window.isDraggingNav = false;
+        window.lastBubbleIndex = 0;
+        window.navTargetIndex = 0;
+        window.navCurrentIndex = 0;
+        window.navAnimationFrameId = null;
+        window.navVelocity = 0;
+
+        // Permanent colors for watercolor bleed matching light and dark themes
+        const tabColorsLight = [
+            'rgba(22, 163, 74, 0.28)',   // Green
+            'rgba(13, 148, 136, 0.28)',  // Teal
+            'rgba(139, 92, 246, 0.28)',  // Purple
+            'rgba(37, 99, 235, 0.28)',   // Blue
+            'rgba(15, 118, 110, 0.28)'   // Pine Green
+        ];
+        const tabColorsDark = [
+            'rgba(74, 222, 128, 0.25)',  // Neon Green
+            'rgba(45, 212, 191, 0.25)',  // Neon Teal
+            'rgba(167, 139, 250, 0.25)', // Neon Purple
+            'rgba(96, 165, 250, 0.25)',  // Neon Blue
+            'rgba(52, 211, 153, 0.25)'   // Neon Emerald
+        ];
+
+        function parseRGBA(rgbaStr) {
+            const match = rgbaStr.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
+            return {
+                r: parseInt(match[1]),
+                g: parseInt(match[2]),
+                b: parseInt(match[3]),
+                a: parseFloat(match[4] || 1)
+            };
+        }
+
+        // Pre-parse to avoid regex match calculations inside animation frames (boosts performance)
+        const parsedColorsLight = tabColorsLight.map(parseRGBA);
+        const parsedColorsDark = tabColorsDark.map(parseRGBA);
+
+        window.updateBubbleColor = function(index) {
+            if (!bubble) return;
+            const isDark = document.body.classList.contains('dark-theme');
+            const colors = isDark ? parsedColorsDark : parsedColorsLight;
+            
+            // Clamp index between 0 and colors.length - 1 to prevent out-of-bounds error on spring overshoot wobble!
+            const clampedIndex = Math.max(0, Math.min(colors.length - 1, index));
+            
+            const baseIndex = Math.floor(clampedIndex);
+            const nextIndex = Math.min(colors.length - 1, baseIndex + 1);
+            const ratio = clampedIndex - baseIndex;
+            
+            const c1 = colors[baseIndex];
+            const c2 = colors[nextIndex];
+            
+            const r = Math.round(c1.r + (c2.r - c1.r) * ratio);
+            const g = Math.round(c1.g + (c2.g - c1.g) * ratio);
+            const b = Math.round(c1.b + (c2.b - c1.b) * ratio);
+            const a = c1.a + (c2.a - c1.a) * ratio;
+            
+            bubble.style.setProperty('--active-tab-color', `rgba(${r}, ${g}, ${b}, ${a})`);
+        };
+
+        const stiffness = 0.08; // Spring stiffness force
+        const damping = 0.72;    // Damping resistance (friction)
+
+        window.updateAnimLoop = function() {
+            if (window.isDraggingNav) {
+                // Dragging: follow finger with smooth lerp delay
+                const diff = window.navTargetIndex - window.navCurrentIndex;
+                window.navCurrentIndex += diff * 0.22;
+                window.renderBubblePosition(window.navCurrentIndex);
+                window.navAnimationFrameId = requestAnimationFrame(window.updateAnimLoop);
+            } else {
+                // Snapping/Released: run spring physics simulation with elastic overshoot wobble!
+                const force = (window.navTargetIndex - window.navCurrentIndex) * stiffness;
+                window.navVelocity = (window.navVelocity + force) * damping;
+                window.navCurrentIndex += window.navVelocity;
+                window.renderBubblePosition(window.navCurrentIndex);
+
+                const diff = window.navTargetIndex - window.navCurrentIndex;
+                // Continue the physics simulation loop until velocity and displacement settle
+                if (Math.abs(diff) > 0.001 || Math.abs(window.navVelocity) > 0.001) {
+                    window.navAnimationFrameId = requestAnimationFrame(window.updateAnimLoop);
+                } else {
+                    window.navCurrentIndex = window.navTargetIndex;
+                    window.renderBubblePosition(window.navCurrentIndex);
+                    window.navAnimationFrameId = null;
+                    window.navVelocity = 0;
+                }
+            }
+        }
+
+        window.renderBubblePosition = function(index) {
+            // Calculate movement speed delta for horizontal scale stretching (water bubble stretch)
+            const delta = index - window.lastBubbleIndex;
+            window.lastBubbleIndex = index;
+            
+            // Volume Conservation: stretch horizontally, squash vertically (like a realistic water drop)
+            const stretchX = 1 + Math.min(0.55, Math.abs(delta) * 5.0);
+            const stretchY = 1 - Math.min(0.28, Math.abs(delta) * 2.5);
+
+            bubble.style.transform = `translateX(${index * 100}%) scale(${stretchX}, ${stretchY})`;
+            window.updateBubbleColor(index);
+
+            // Slide the page carousel in real-time matching the exact coordinates of the bubble!
+            const carouselInner = document.getElementById('screens-carousel-inner');
+            if (carouselInner) {
+                carouselInner.style.transform = `translateX(-${index * 20}%)`;
+            }
+        }
+
+        // Initialize bubble color and index on page load
+        setTimeout(() => {
+            const currentScreenIndex = screens.indexOf(activeScreen || 'home');
+            window.navTargetIndex = currentScreenIndex >= 0 ? currentScreenIndex : 0;
+            window.navCurrentIndex = window.navTargetIndex;
+            window.renderBubblePosition(window.navCurrentIndex);
+            if (typeof window.calculateBlend === 'function') {
+                window.calculateBlend();
+            }
+        }, 100);
+
+        function getIndexFromCoords(clientX) {
+            const navRect = navBar.getBoundingClientRect();
+            const relativeX = clientX - navRect.left;
+            const pct = (relativeX / navRect.width) * 100;
+            const clamped = Math.max(10, Math.min(90, pct));
+            return (clamped - 10) / 20;
+        }
+
+        function dragStart(clientX, e) {
+            if (e && e.cancelable) {
+                e.preventDefault();
+            }
+            window.isDraggingNav = true;
+            bubble.classList.add('dragging');
+            bubble.style.transition = 'none';
+
+            const touchIndex = getIndexFromCoords(clientX);
+            window.navTargetIndex = touchIndex;
+            window.navCurrentIndex = touchIndex;
+            window.lastBubbleIndex = touchIndex;
+            window.navVelocity = 0;
+
+            if (!window.navAnimationFrameId) {
+                window.updateAnimLoop();
+            }
+        }
+
+        function dragMove(clientX, e) {
+            if (!window.isDraggingNav) return;
+            if (e && e.cancelable) {
+                e.preventDefault();
+            }
+            const touchIndex = getIndexFromCoords(clientX);
+            window.navTargetIndex = touchIndex;
+
+            if (!window.navAnimationFrameId) {
+                window.updateAnimLoop();
+            }
+        }
+
+        function dragEnd(clientX, e) {
+            if (!window.isDraggingNav) return;
+            if (e && e.cancelable) {
+                e.preventDefault();
+            }
+            window.isDraggingNav = false;
+            bubble.classList.remove('dragging');
+            bubble.style.transition = '';
+
+            const touchIndex = getIndexFromCoords(clientX);
+            const finalIndex = Math.max(0, Math.min(4, Math.round(touchIndex)));
+            window.navTargetIndex = finalIndex;
+
+            showScreen(screens[finalIndex]);
+        }
+
+        // Bind touch events
+        navBar.addEventListener('touchstart', (e) => {
+            const touch = e.touches[0];
+            if (touch) dragStart(touch.clientX, e);
+        }, { passive: false });
+
+        navBar.addEventListener('touchmove', (e) => {
+            const touch = e.touches[0];
+            if (touch) dragMove(touch.clientX, e);
+        }, { passive: false });
+
+        navBar.addEventListener('touchend', (e) => {
+            const touch = e.changedTouches ? e.changedTouches[0] : e.touches[0];
+            if (touch) {
+                dragEnd(touch.clientX, e);
+            } else {
+                window.isDraggingNav = false;
+                bubble.classList.remove('dragging');
+                bubble.style.transition = '';
+            }
+        }, { passive: false });
+
+        navBar.addEventListener('touchcancel', (e) => {
+            window.isDraggingNav = false;
+            bubble.classList.remove('dragging');
+            bubble.style.transition = '';
+        }, { passive: false });
+
+        // Bind mouse events for desktop drag support
+        navBar.addEventListener('mousedown', (e) => {
+            dragStart(e.clientX, e);
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (window.isDraggingNav) {
+                dragMove(e.clientX, e);
+            }
+        });
+
+        window.addEventListener('mouseup', (e) => {
+            if (window.isDraggingNav) {
+                dragEnd(e.clientX, e);
+            }
+        });
+
+        // ── Splash Screen Animation Timeline ──
+        window.runSplashIntroAnimation = function() {
+            const splash = document.getElementById('app-splash-screen');
+            const splashEmblem = document.getElementById('splash-emblem');
+            const splashText = document.getElementById('splash-text');
+            const loginCard = document.querySelector('.login-card-mobile');
+            const targetLogo = document.getElementById('login-console-logo');
+
+            if (!splash) return;
+
+            // 1. Reset all elements to initial state (no transition)
+            splash.style.display = 'flex';
+            splash.style.opacity = '1';
+            splash.style.pointerEvents = 'auto';
+            
+            if (splashEmblem) {
+                splashEmblem.style.transition = 'none';
+                splashEmblem.style.opacity = '0';
+                splashEmblem.style.transform = 'scale(0.6)';
+                splashEmblem.style.filter = 'invert(1) hue-rotate(180deg) opacity(0.95)';
+            }
+            if (splashText) {
+                splashText.style.transition = 'none';
+                splashText.style.opacity = '0';
+                splashText.style.transform = 'translateY(12px)';
+            }
+            if (loginCard) {
+                loginCard.style.transition = 'none';
+                loginCard.style.opacity = '0';
+                loginCard.style.transform = 'translateY(20px)';
+            }
+            if (targetLogo) {
+                targetLogo.style.transition = 'none';
+                targetLogo.style.opacity = '0';
+            }
+
+            // Force reflow
+            void splash.offsetWidth;
+
+            // Re-enable transitions for animation phases
+            if (splashEmblem) {
+                splashEmblem.style.transition = 'transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.8s ease';
+            }
+            if (splashText) {
+                splashText.style.transition = 'transform 0.8s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.8s ease';
+            }
+            if (loginCard) {
+                loginCard.style.transition = 'opacity 0.6s ease, transform 0.6s cubic-bezier(0.25, 1, 0.5, 1)';
+            }
+            if (targetLogo) {
+                targetLogo.style.transition = 'opacity 0.15s ease';
+            }
+
+            // Phase 1: Reveal emblem and brand text on load
+            setTimeout(() => {
+                if (splashEmblem) {
+                    splashEmblem.style.opacity = '1';
+                    splashEmblem.style.transform = 'scale(1)';
+                }
+                if (splashText) {
+                    splashText.style.opacity = '1';
+                    splashText.style.transform = 'translateY(0)';
+                }
+            }, 200);
+
+            // Phase 2: Fade out brand text and fade in login card form fields
+            setTimeout(() => {
+                if (splashText) {
+                    splashText.style.opacity = '0';
+                    splashText.style.transform = 'translateY(12px)';
+                    splashText.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+                }
+                if (loginCard) {
+                    loginCard.style.opacity = '1';
+                    loginCard.style.transform = 'translateY(0)';
+                }
+            }, 1600);
+
+            // Phase 3: Glide and morph emblem directly into position inside the login console
+            setTimeout(() => {
+                if (splashEmblem && targetLogo) {
+                    const startRect = splashEmblem.getBoundingClientRect();
+                    const targetRect = targetLogo.getBoundingClientRect();
+
+                    const deltaX = (targetRect.left + targetRect.width / 2) - (startRect.left + startRect.width / 2);
+                    const deltaY = (targetRect.top + targetRect.height / 2) - (startRect.top + startRect.height / 2);
+                    const scale = targetRect.width / startRect.width;
+
+                    const isDark = document.body.classList.contains('dark-theme');
+                    if (!isDark) {
+                        splashEmblem.style.filter = 'none';
+                    }
+
+                    splashEmblem.style.transition = 'transform 0.85s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.85s ease-in-out, filter 0.85s ease-out';
+                    splashEmblem.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(${scale})`;
+                }
+            }, 1800);
+
+            // Phase 4: Finalize transition: hide splash screen, reveal native logo
+            setTimeout(() => {
+                if (targetLogo) {
+                    targetLogo.style.opacity = '1';
+                }
+                if (splashEmblem) {
+                    splashEmblem.style.opacity = '0';
+                }
+                if (splash) {
+                    splash.style.opacity = '0';
+                    splash.style.pointerEvents = 'none';
+                    setTimeout(() => {
+                        splash.style.display = 'none';
+                    }, 400);
+                }
+            }, 2600);
+        };
+
+        const savedCompName = localStorage.getItem('trasure-mobile-logged-in-company');
+        const savedRole = localStorage.getItem('trasure-mobile-logged-in-role');
+        
+        if (!(savedCompName && savedRole) && urlParams.get('demo_login') !== 'true') {
+            if (typeof window.runSplashIntroAnimation === 'function') {
+                window.runSplashIntroAnimation();
+            }
+        }
+    });
+    </script>
+</body>
+</html>
