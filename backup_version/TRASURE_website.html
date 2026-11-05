@@ -1065,11 +1065,35 @@
                             </div>
 
                             <!-- Map Card Container -->
-                            <div class="card map-panel-sidebar" style="padding: 16px;">
-                                <h4>Logistics Sourcing Map</h4>
+                            <div class="card map-panel-sidebar">
+                                <div class="map-panel-header">
+                                    <div class="map-title-wrap">
+                                        <h4>Logistics Sourcing Map</h4>
+                                        <span class="map-live-badge"><span class="live-dot"></span> Live Transit GIS</span>
+                                    </div>
+                                    <div class="map-header-btns">
+                                        <button type="button" class="btn-map-action" id="btn-map-satellite-toggle" onclick="toggleSatelliteView()" title="Toggle Satellite Aerial View">
+                                            <span>🛰️ Satellite</span>
+                                        </button>
+                                        <button type="button" class="btn-map-action" onclick="fitActiveMapRoute()" title="Fit all markers & route in view">
+                                            <span>⛶ Fit Route</span>
+                                        </button>
+                                        <button type="button" class="btn-map-action" onclick="centerBuyerPlant()" title="Center on Delivery Hub">
+                                            <span>🏭 My Plant</span>
+                                        </button>
+                                    </div>
+                                </div>
                                 <div class="map-wrapper">
                                     <div id="leaflet-map"></div>
-                                    <div class="map-overlay" id="map-connection-info">Select a seller listing below to map the delivery route</div>
+                                </div>
+                                <div class="map-route-panel" id="map-connection-info">
+                                    <div class="route-empty-state">
+                                        <span class="route-empty-icon">📍</span>
+                                        <div class="route-empty-text">
+                                            <strong>No Route Selected</strong>
+                                            <p>Select any circular material listing from the table below to calculate highway freight corridor & logistics costs.</p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
