@@ -707,7 +707,8 @@ The web client integrates precision GIS road routing, an asynchronous live rever
 | **Niv Sorathiya** | **24BCB032** | Full-Stack Architecture, SDLC Management, Delivered Cost Engine, GIS Road Routing, Live Reverse Auction Desk, SPCB Compliance Engine, UML Design, Verification & Documentation. |
 
 ### Source Code Repository Link
-- **GitHub Repository:** `https://github.com/nivsorathiya-web/TRASURE`  
+- **GitHub Repository:** `https://trasure-phi.vercel.app
+- **GitHub Repository:** https://github.com/nivsorathiya-web/TRASURE`  
 - *The repository contains the complete source code (`TRASURE_website.html`, `app.js`, `style.css`), test suites, and documentation.*
 
 ---
