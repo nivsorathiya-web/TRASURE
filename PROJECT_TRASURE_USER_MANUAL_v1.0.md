@@ -240,4 +240,4 @@ For technical support, software verification questions, or academic inquiries re
 - **Department:** Computer Science and Business Systems (CSBS)  
 - **Institution:** School of Technology, Pandit Deendayal Energy University (PDEU), Gandhinagar, Gujarat  
 - **Email:** `niv.sorathiya@sot.pdpu.ac.in` / `nivsorathiya@gmail.com`  
-- **GitHub Repository:** `https://github.com/nivsorathiya-web/Project-TRASURE-B2B-Circular-Economy-Engine`  
+- **GitHub Repository:** `https://github.com/nivsorathiya-web/TRASURE`  
