@@ -3,7 +3,7 @@
 ### Web Platform User Guide & Operational Reference
 
 **Course:** Software Engineering Laboratory & Theory  
-**Author:** Niv Sorathiya [Roll No: 24BCB032]  
+**Author:** Niv J. Sorathiya [Roll Number: 24BCB037 (Semester 5 | Division 1 | Group J2)]  
 **Department:** Computer Science and Business Systems (CSBS)  
 **Institution:** School of Technology, Pandit Deendayal Energy University (PDEU)  
 **Academic Year:** 2025–2026  
@@ -235,10 +235,10 @@ Allows administrators or evaluators to recalibrate simulation parameters, reset 
 
 For technical support, software verification questions, or academic inquiries regarding Project TRASURE:
 
-- **Lead Architect & Developer:** Niv Sorathiya  
-- **University Roll Number:** 24BCB032  
+- **Lead Architect & Developer:** Niv J. Sorathiya  
+- **University Roll Number:** 24BCB037  
 - **Department:** Computer Science and Business Systems (CSBS)  
 - **Institution:** School of Technology, Pandit Deendayal Energy University (PDEU), Gandhinagar, Gujarat  
-- **Email:** `niv.sorathiya@sot.pdpu.ac.in` / `nivsorathiya@gmail.com`  
-- **GitHub Repository:** `https://trasure-phi.vercel.app
-- **GitHub Repository:** https://github.com/nivsorathiya-web/TRASURE`  
+- **Email:** `24bcb037@sot.pdpu.ac.in` / `niv.sorathiya@gmail.com`  
+- **Live Web Deployment:** https://trasure-phi.vercel.app
+- **GitHub Repository:** https://github.com/nivsorathiya-web/TRASURE  

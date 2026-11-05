@@ -3,7 +3,7 @@
 **Software Engineering Project Report**  
 **Course:** Software Engineering Laboratory & Theory  
 **Submitted by:**  
-**Niv Sorathiya** [Roll No: 24BCB032]  
+**Niv J. Sorathiya** [Roll Number: 24BCB037 (Semester 5 | Division 1 | Group J2)]  
 **Department:** Computer Science and Business Systems (CSBS)  
 **Institution:** School of Technology, Pandit Deendayal Energy University (PDEU)  
 **Academic Year:** 2025–2026  
@@ -12,13 +12,13 @@
 
 ## 1. Roles and Contributions
 
-This project was conceived, architected, developed, and verified **single-handedly by Niv Sorathiya**. All engineering lifecycle activities—spanning domain research into industrial circular economy dynamics, software architecture design, interactive web client development, real-time GIS transit corridor rendering, reverse auction state modeling, test automation, and final report compilation—were conducted independently.
+This project was conceived, architected, developed, and verified **single-handedly by Niv J. Sorathiya**. All engineering lifecycle activities—spanning domain research into industrial circular economy dynamics, software architecture design, interactive web client development, real-time GIS transit corridor rendering, reverse auction state modeling, test automation, and final report compilation—were conducted independently.
 
 ### Author Profile and Responsibilities
 
 | Student Name | Roll Number | Degree & Specialization | Key Responsibilities & Contributions |
 | :--- | :--- | :--- | :--- |
-| **Niv Sorathiya** | **24BCB032** | B.Tech – Computer Science and Business Systems (CSBS), PDEU | **Full Lifecycle Ownership:**<br>• System requirements specification & industrial stakeholder questionnaires.<br>• Non-functional & regulatory architecture (SPCB compliance).<br>• UML & structural design (Class, Sequence, Use Case, Activity, Component, Deployment).<br>• Implementation of Delivered Landed Cost formula, GIS road transit routing, reverse auction engine with anti-sniping, and auto-settlement invoicing.<br>• Unit testing, integration testing, system-level verification, defect resolution.<br>• Final documentation, user manual, and project presentation. |
+| **Niv J. Sorathiya** | **24BCB037** | B.Tech – Computer Science and Business Systems (CSBS), PDEU | **Full Lifecycle Ownership:**<br>• System requirements specification & industrial stakeholder questionnaires.<br>• Non-functional & regulatory architecture (SPCB compliance).<br>• UML & structural design (Class, Sequence, Use Case, Activity, Component, Deployment).<br>• Implementation of Delivered Landed Cost formula, GIS road transit routing, reverse auction engine with anti-sniping, and auto-settlement invoicing.<br>• Unit testing, integration testing, system-level verification, defect resolution.<br>• Final documentation, user manual, and project presentation. |
 
 ### Solo Development Scope & Governance
 Because this project was undertaken as a solo engineering endeavor, rigorous modular decoupling was enforced from inception. By separating the web application into isolated controllers (`LandedCostEngine`, `TransitGISRouter`, `ReverseAuctionDesk`, `ComplianceManager`, `InvoiceBillingModule`, and `StorageService`), individual components were developed and verified iteratively, ensuring zero regressive defects across complex real-time bidding and map plotting workflows.
@@ -570,7 +570,7 @@ All diagrams above are natively structured in standards-compliant Mermaid syntax
 
 ## 8. Test Cases and Results
 
-### 8.1 Niv Sorathiya — Unit Test Cases (Roll No: 24BCB032)
+### 8.1 Niv J. Sorathiya — Unit Test Cases (Roll Number: 24BCB037 (Semester 5 | Division 1 | Group J2))
 
 A comprehensive suite of 10 isolated unit tests was engineered to validate mathematical functions, currency formatting, countdown timer anti-sniping resets, and boundary validations.
 
@@ -628,7 +628,7 @@ Below are concrete programmatic test scripts and console outputs verifying the c
 ```javascript
 /**
  * Project TRASURE - Automated Logic Verification Suite
- * Author: Niv Sorathiya (24BCB032)
+ * Author: Niv J. Sorathiya (24BCB037)
  */
 
 function calculateDeliveredCost(basePrice, distanceKm, freightRatePerKm, handlingFee = 150) {
@@ -655,7 +655,7 @@ function calculateTaxes(materialSubtotal, freightSubtotal) {
 }
 
 // Execution and Assertion
-console.log("=== RUNNING TRASURE TEST SUITE (Niv Sorathiya - 24BCB032) ===");
+console.log("=== RUNNING TRASURE TEST SUITE (Niv J. Sorathiya - 24BCB037) ===");
 
 // Test 1: Delivered Landed Cost Calculation
 const cost1 = calculateDeliveredCost(2400, 450, 2.0, 150);
@@ -684,7 +684,7 @@ console.log("=== ALL UNIT ASSERTIONS EXECUTED SUCCESSFULLY ===");
 
 ```
 $ node test_suite.js
-=== RUNNING TRASURE TEST SUITE (Niv Sorathiya - 24BCB032) ===
+=== RUNNING TRASURE TEST SUITE (Niv J. Sorathiya - 24BCB037) ===
 [PASS] UT-N-01: Delivered Landed Cost Formula => ₹3450/MT
 [PASS] UT-N-04: Negative Bid Rejection => "Bid must be strictly positive"
 [PASS] UT-N-03: Minimum Undercut Guard => "Must undercut by at least ₹50"
@@ -704,18 +704,18 @@ The web client integrates precision GIS road routing, an asynchronous live rever
 
 | Student Name | University Roll Number | Primary Academic Contribution |
 | :--- | :--- | :--- |
-| **Niv Sorathiya** | **24BCB032** | Full-Stack Architecture, SDLC Management, Delivered Cost Engine, GIS Road Routing, Live Reverse Auction Desk, SPCB Compliance Engine, UML Design, Verification & Documentation. |
+| **Niv J. Sorathiya** | **24BCB037** | Full-Stack Architecture, SDLC Management, Delivered Cost Engine, GIS Road Routing, Live Reverse Auction Desk, SPCB Compliance Engine, UML Design, Verification & Documentation. |
 
 ### Source Code Repository Link
-- **GitHub Repository:** `https://trasure-phi.vercel.app
-- **GitHub Repository:** https://github.com/nivsorathiya-web/TRASURE`  
+- **Live Web Deployment:** https://trasure-phi.vercel.app
+- **GitHub Repository:** https://github.com/nivsorathiya-web/TRASURE  
 - *The repository contains the complete source code (`TRASURE_website.html`, `app.js`, `style.css`), test suites, and documentation.*
 
 ---
 
 ## 11. Self / Student Reflection
 
-**Author:** Niv Sorathiya (24BCB032)  
+**Author:** Niv J. Sorathiya (24BCB037)  
 **Role:** Solo Project Architect & Full-Stack Developer  
 
 Undertaking and delivering Project TRASURE single-handedly as a 3rd-year Computer Science and Business Systems student at Pandit Deendayal Energy University has been an exceptionally enriching and challenging software engineering endeavor. Building an enterprise B2B platform that marries industrial supply chain economics with real-time web technologies required me to step far beyond standard classroom assignments and assume full responsibility for every phase of the engineering lifecycle.
