@@ -1,13 +1,14 @@
-# USER MANUAL (v1.0)
-## PROJECT TRASURE: B2B CIRCULAR ECONOMY AUCTION ENGINE & BY-PRODUCT TRADE PLATFORM
-### Web Platform User Guide & Operational Reference
+# PROJECT TRASURE: SYSTEM USER MANUAL (v1.0)
+### Industrial Operating Guide & Platform Reference
 
-**Course:** Software Engineering Laboratory & Theory  
-**Author:** Niv J. Sorathiya [Roll Number: 24BCB037 (Semester 5 | Division 1 | Group J2)]  
+**Course:** Software Engineering Laboratory & Theory (20CS301T / 20CS301P)  
+**Author:** **Niv J. Sorathiya** [Roll Number: **24BCB037** | 5th Semester | Division 1 | Group J2]  
 **Department:** Computer Science and Business Systems (CSBS)  
 **Institution:** School of Technology, Pandit Deendayal Energy University (PDEU)  
-**Academic Year:** 2025–2026  
-**Document Release:** Version 1.0 (Final Academic Release)  
+**College Email:** 24bcb037@sot.pdpu.ac.in | **Personal Email:** niv.sorathiya@gmail.com  
+**Live Platform Deployment:** [https://trasure-phi.vercel.app](https://trasure-phi.vercel.app)  
+**Official GitHub Repository:** [https://github.com/nivsorathiya-web/TRASURE](https://github.com/nivsorathiya-web/TRASURE)  
+**Document Release:** Version 1.0 (Official Academic Release)  
 
 ---
 
