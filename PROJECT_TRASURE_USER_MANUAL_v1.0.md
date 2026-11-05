@@ -52,22 +52,14 @@ Project TRASURE is constructed entirely as a lightweight, zero-dependency **Sing
 
 The TRASURE web interface is structured into three cohesive visual zones designed for high operational efficiency:
 
-```
-┌────────────────────────────────────────────────────────────────────────────┐
-│ [LOGO] PROJECT TRASURE  |  B2B Circular Economy Engine       [Live Status] │
-├────────────────────────────────────────────────────────────────────────────┤
-│  [Tab: Sourcing Directory]  [Tab: Live Reverse Auction]  [Tab: Compliance] │
-├──────────────────────────────────────┬─────────────────────────────────────┤
-│  LEFT PANE: SOURCING & CONTROLS      │  RIGHT PANE: GIS LOGISTICS MAP      │
-│  • Destination Plant Selector        │  • Interactive Leaflet Viewport     │
-│  • Material Filter (Fly Ash, Slag)   │  • Turn-by-Turn Road Route Corridors│
-│  • Ranked Supplier Directory Cards   │  • Plant Pin Markers & Tooltips     │
-│  • Delivered Landed Cost Summaries   │  • Map Controls (Zoom, Fit Route)   │
-├──────────────────────────────────────┴─────────────────────────────────────┤
-│  BOTTOM BANNER: ACTIVE ROUTE LOGISTICS SUMMARY                             │
-│  Origin Plant ➔ Delivery Hub | Total Road Distance | Estimated Transit Hrs │
-└────────────────────────────────────────────────────────────────────────────┘
-```
+### Operational Layout & Interface Architecture
+
+| Visual Zone | Interface Component | Primary Role & Operational Capabilities |
+| :--- | :--- | :--- |
+| **Top Navigation Bar** | App Header & Navigation Tabs | Platform brand identity (`🌱 TRASURE`), real-time node connectivity status, registered corporate plant indicator (`UltraTech Cement Vadodara Hub`), and navigation tabs switching between **Sourcing Directory**, **Live Reverse Auction Exchange**, and **SPCB Compliance Desk**. |
+| **Zone 1: Operational Desk (Left)** | Multi-Parameter Sourcing Console | Real-time by-product category filters (`Fly Ash`, `GGBS`, `Slag`), plant destination selector, and ranked supplier directory cards displaying ex-plant rates, road distance (km), and dynamically computed Delivered Landed Cost. |
+| **Zone 2: GIS Logistics Viewport (Right)** | Leaflet Interactive Map Viewport | Hardware-accelerated Esri World Gray Canvas basemap rendering supplier plant markers, active turn-by-turn highway transit corridors (e.g., NH-48 corridor), and transit duration metrics. |
+| **Zone 3: Logistics Summary Ribbon** | Real-Time Transit Status Ribbon | Fixed bottom status bar summarizing the active trade corridor: origin plant, destination delivery hub, exact road distance (412.4 km), estimated truck transit time (7.2 hrs), and gross landed unit rate (₹2,450/MT). |
 
 - **Top Navigation Bar:** Displays platform identity, current active receiving hub, and navigation pills to jump between the **Sourcing Directory**, **Live Reverse Auction Exchange**, and **SPCB Compliance Desk**.
 - **Left Panel (Operational Desk):** Houses multi-parameter search filters, plant destination selectors, and the ranked by-product supplier catalog cards displaying ex-plant vs. delivered landed rates.
