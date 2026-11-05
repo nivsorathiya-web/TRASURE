@@ -145,30 +145,61 @@
                     </div>
 
                     <form id="login-portal-form" onsubmit="handleLoginSubmit(event)">
-                        <!-- Floating Label Input Group -->
-                        <div class="form-group floating-label">
-                            <select id="login-company-select" class="form-control select-input" required>
-                                <option value="" disabled selected hidden></option>
-                                <!-- Populated dynamically -->
-                            </select>
-                            <label for="login-company-select">Select Registered Industry</label>
+                        <!-- Corporate Profile Selector with Clean Dedicated Label -->
+                        <div class="form-group" style="margin-bottom: 16px; text-align: left;">
+                            <label for="login-company-select" style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 6px; letter-spacing: 0.3px; text-transform: uppercase;">
+                                🏢 Select Registered Industry / Plant
+                            </label>
+                            <div style="position: relative;">
+                                <select id="login-company-select" class="form-control select-input" required style="width: 100%; height: 48px; padding: 10px 38px 10px 12px; font-size: 0.88rem; font-weight: 600; border-radius: 8px; border: 1.5px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary); appearance: none; -webkit-appearance: none; cursor: pointer;">
+                                    <option value="" disabled selected>-- Choose Registered Plant Profile --</option>
+                                    <optgroup label="⭐ Verified Industrial Plants">
+                                        <option value="UltraTech Cement Ltd">UltraTech Cement Ltd — Mumbai, Maharashtra</option>
+                                        <option value="Ambuja Cements Ltd">Ambuja Cements Ltd — Ahmedabad, Gujarat</option>
+                                        <option value="Tata Steel Ltd">Tata Steel Ltd — Jamshedpur, Jharkhand</option>
+                                        <option value="JSW Steel Ltd">JSW Steel Ltd — Bellary, Karnataka</option>
+                                        <option value="Deepak Nitrite Ltd">Deepak Nitrite Ltd — Vadodara, Gujarat</option>
+                                        <option value="Aarti Industries Ltd">Aarti Industries Ltd — Ankleshwar, Gujarat</option>
+                                        <option value="Chemfix Industries Ltd">Chemfix Industries Ltd — Surat, Gujarat</option>
+                                        <option value="NTPC Ramagundam">NTPC Ramagundam — Ramagundam, Telangana</option>
+                                        <option value="IOCL Refinery (Panipat)">IOCL Refinery (Panipat) — Panipat, Haryana</option>
+                                        <option value="Vedanta Ltd (Jharsuguda)">Vedanta Ltd (Jharsuguda) — Jharsuguda, Odisha</option>
+                                        <option value="Grasim Industries Ltd">Grasim Industries Ltd — Vilayat, Gujarat</option>
+                                        <option value="Paradeep Phosphates Ltd">Paradeep Phosphates Ltd — Paradeep, Odisha</option>
+                                        <option value="Atul Ltd (Vapi Plant)">Atul Ltd (Vapi Plant) — Vapi, Gujarat</option>
+                                        <option value="Bodal Chemicals Ltd">Bodal Chemicals Ltd — Ahmedabad, Gujarat</option>
+                                        <option value="GNFC Ltd">GNFC Ltd — Bharuch, Gujarat</option>
+                                        <option value="GSFC Ltd">GSFC Ltd — Vadodara, Gujarat</option>
+                                        <option value="United Phosphorous Ltd (UPL)">United Phosphorous Ltd (UPL) — Vapi, Gujarat</option>
+                                        <option value="Tata Chemicals Ltd">Tata Chemicals Ltd — Mithapur, Gujarat</option>
+                                    </optgroup>
+                                </select>
+                                <span style="position: absolute; right: 14px; top: 50%; transform: translateY(-50%); pointer-events: none; color: #16a34a; font-size: 0.85rem; font-weight: bold;">▼</span>
+                            </div>
                         </div>
 
-                        <!-- Floating Label PIN Group -->
-                        <div class="form-group floating-label" style="margin-top: 15px;">
-                            <input type="password" id="login-pin" class="form-control" maxlength="4" pattern="[0-9]{4}" placeholder=" " required>
-                            <label for="login-pin">Portal Access PIN (4 Digits)</label>
+                        <!-- Security PIN Input with Auto-Fill & Clickable Helper -->
+                        <div class="form-group" style="margin-bottom: 14px; text-align: left;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                                <label for="login-pin" style="font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); letter-spacing: 0.3px; text-transform: uppercase;">
+                                    🔒 Portal Access PIN
+                                </label>
+                                <span id="pin-hint-badge" onclick="autoFillDemoPin()" style="font-size: 0.72rem; background: rgba(34, 197, 94, 0.12); color: #16a34a; padding: 2px 8px; border-radius: 12px; font-weight: 700; cursor: pointer; border: 1px solid rgba(34, 197, 94, 0.3);" title="Click to auto-fill default demo PIN">
+                                    Demo PIN: 1234 (Click to fill)
+                                </span>
+                            </div>
+                            <input type="password" id="login-pin" class="form-control" maxlength="4" pattern="[0-9]{4}" value="1234" placeholder="Enter 4-Digit PIN" required style="width: 100%; height: 48px; padding: 10px 14px; font-size: 1.1rem; letter-spacing: 4px; border-radius: 8px; border: 1.5px solid var(--border-color); background: var(--bg-primary); color: var(--text-primary); font-weight: 700;">
                         </div>
 
                         <!-- WhatsApp Alert Checkbox -->
-                        <div class="form-group checkbox-group" style="margin-top: 12px; margin-bottom: 5px;">
-                            <label class="checkbox-label" for="login-whatsapp" style="display: flex; align-items: center; gap: 8px; font-size: 0.8rem; cursor: pointer; color: var(--text-secondary);">
+                        <div class="form-group checkbox-group" style="margin-top: 10px; margin-bottom: 5px;">
+                            <label class="checkbox-label" for="login-whatsapp" style="display: flex; align-items: center; gap: 8px; font-size: 0.78rem; cursor: pointer; color: var(--text-secondary);">
                                 <input type="checkbox" id="login-whatsapp" checked style="accent-color: #25d366; cursor: pointer;">
                                 <span>Enable WhatsApp bidding & outbid alert updates</span>
                             </label>
                         </div>
 
-                        <button type="submit" class="btn btn-primary animate-btn" style="margin-top: 20px; font-size: 0.95rem; padding: 14px; height: auto;">
+                        <button type="submit" class="btn btn-primary animate-btn" style="margin-top: 16px; font-size: 0.95rem; padding: 13px; height: auto; width: 100%;">
                             <span class="btn-text">Access Corporate Console &rarr;</span>
                         </button>
                     </form>

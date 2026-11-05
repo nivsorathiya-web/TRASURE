@@ -3080,21 +3080,52 @@ function setLoginRole(role) {
     updateLoginCompanyDropdown();
 }
 
+function autoFillDemoPin() {
+    const pinInput = document.getElementById('login-pin');
+    if (pinInput) {
+        pinInput.value = '1234';
+        pinInput.classList.add('has-value');
+        showToast("Demo Security PIN 1234 auto-filled ✓", "info");
+    }
+}
+
 function updateLoginCompanyDropdown() {
     const select = document.getElementById('login-company-select');
     if (!select) return;
 
-    select.innerHTML = '<option value="" disabled selected hidden>Select corporate profile</option>';
-    companiesDb.forEach(comp => {
-        // Enforce account separation: only list companies that match the loginRole selection
-        if (loginRole === 'buyer' && comp.role !== 'buyer' && comp.role !== 'both') return;
-        if (loginRole === 'seller' && comp.role !== 'seller' && comp.role !== 'both') return;
+    const currentSelected = select.value;
+    select.innerHTML = '<option value="" disabled' + (!currentSelected ? ' selected' : '') + '>-- Choose Registered Plant Profile --</option>';
 
+    // Filter by active role and sort alphabetically
+    const matching = (companiesDb || []).filter(comp => {
+        if (loginRole === 'buyer' && comp.role !== 'buyer' && comp.role !== 'both') return false;
+        if (loginRole === 'seller' && comp.role !== 'seller' && comp.role !== 'both') return false;
+        return true;
+    }).sort((a, b) => a.name.localeCompare(b.name));
+
+    const groupLabel = loginRole === 'buyer' ? 'Verified Sourcing Buyers (Procurement)' : 'Verified Industrial Generators (Sellers)';
+    const optgroup = document.createElement('optgroup');
+    optgroup.label = `⭐ ${groupLabel}`;
+
+    matching.forEach(comp => {
         const opt = document.createElement('option');
         opt.value = comp.name;
-        opt.innerText = `${comp.name} (${comp.city}, ${citiesDb[comp.city].state})`;
-        select.appendChild(opt);
+        const stateStr = (citiesDb[comp.city] && citiesDb[comp.city].state) ? citiesDb[comp.city].state : comp.city;
+        opt.textContent = `${comp.name} — ${comp.city}, ${stateStr}`;
+        if (comp.name === currentSelected) {
+            opt.selected = true;
+        }
+        optgroup.appendChild(opt);
     });
+
+    select.appendChild(optgroup);
+
+    // Auto-fill demo PIN
+    const pinInput = document.getElementById('login-pin');
+    if (pinInput && !pinInput.value) {
+        pinInput.value = '1234';
+        pinInput.classList.add('has-value');
+    }
 }
 
 
@@ -3255,6 +3286,18 @@ function logoutPortal() {
    // --- 15. WINDOW CONTROLLERS & SCROLL TRIGGERS ---
 // ==========================================================================
 window.addEventListener('DOMContentLoaded', () => {
+    // Populate login portal dropdown immediately on DOM load
+    updateLoginCompanyDropdown();
+    const loginSelect = document.getElementById('login-company-select');
+    if (loginSelect) {
+        loginSelect.addEventListener('change', () => {
+            const pinInput = document.getElementById('login-pin');
+            if (pinInput) {
+                pinInput.value = '1234';
+                pinInput.classList.add('has-value');
+            }
+        });
+    }
     // Initialize theme state immediately on page load
     initTheme();
 
