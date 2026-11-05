@@ -52,6 +52,9 @@ Project TRASURE is constructed entirely as a lightweight, zero-dependency **Sing
 
 The TRASURE web interface is structured into three cohesive visual zones designed for high operational efficiency:
 
+![TRASURE Operational Console](assets/trade_marketplace.jpg)
+*Figure 3: Project TRASURE Main Operational Console — Sourcing Filter Console, Ranked Circular Material Listings, and Real-Time GIS Logistics Route Map.*
+
 ### Operational Layout & Interface Architecture
 
 | Visual Zone | Interface Component | Primary Role & Operational Capabilities |

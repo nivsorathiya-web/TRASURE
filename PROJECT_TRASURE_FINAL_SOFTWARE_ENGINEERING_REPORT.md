@@ -694,6 +694,26 @@ $ node test_suite.js
 
 ---
 
+
+### 9.2 Empirical UI & System Walkthrough Verification Evidence
+Below are verified empirical runtime captures of the deployed Project TRASURE web platform (https://trasure-phi.vercel.app):
+
+![Homepage Hero & Login](assets/hero_login.jpg)
+*Figure 8: Homepage Hero & Industry Workspace Authentication Console — Single-Click Demo PIN (1234) and Registered Plant Selection.*
+
+![Trade Marketplace](assets/trade_marketplace.jpg)
+*Figure 9: Real-Time Sourcing Marketplace & Delivered Landed Cost Engine — Filter Console and 10 Ranked Material Listings.*
+
+![Logistics Sourcing Map](assets/gis_logistics_map.jpg)
+*Figure 10: OSRM Road Transit Routing & Highway Corridor Viewport — SAIL Rourkela to Ahmedabad Hub (1,548 km, NH Route, ~28 hrs transit).*
+
+![Live Auction Room](assets/live_auction_room.jpg)
+*Figure 11: Live Reverse Auction Room — Real-Time Countdown (23:59), SPCB Approved Verification, Live Bidding Log, and One-Click Decrement Bidding.*
+
+![Verified Plant Directory](assets/plant_directory.jpg)
+*Figure 12: B2B Verified Plant Directory — Enterprise registry with verified GSTIN identities, industrial sectors, and location hubs.*
+
+
 ## 10. Conclusion and Repository Link
 
 Project TRASURE delivers an integrated, production-ready web platform that solves the chronic transparency, logistics, and compliance bottlenecks hindering B2B industrial circular economy trade. By shifting procurement decision-making from isolated ex-plant quotes to dynamic delivered landed costs, the platform enables industrial enterprises to minimize both procurement spend and carbon transit footprints.
