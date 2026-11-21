@@ -1,6 +1,7 @@
-const CACHE_NAME = 'trasure-mobile-cache-v1';
+const CACHE_NAME = 'trasure-mobile-cache-v2';
 const ASSETS = [
     './trasure-mobile-app.html',
+    './mobile-premium.css',
     './icon-192.png',
     './icon-512.png'
 ];

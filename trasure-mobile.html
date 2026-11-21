@@ -8,15 +8,16 @@
     <!-- Outfit & Plus Jakarta Sans Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Outfit:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     
     <!-- Leaflet JS Map CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
     
     <!-- Mobile App Styles -->
     <link rel="stylesheet" href="mobile-style.css">
+    <link rel="stylesheet" href="mobile-premium.css">
 </head>
-<body>
+<body class="dark-theme">
 
     <div class="mobile-viewport">
         <!-- Floating Liquid Glass Background Spheres -->
@@ -1350,7 +1351,7 @@
             themeMode = themeParam;
             localStorage.setItem('trasure-theme', themeParam);
         } else {
-            themeMode = localStorage.getItem('trasure-theme') || 'light';
+            themeMode = localStorage.getItem('trasure-theme') || 'dark';
         }
         if (themeMode === 'dark') {
             document.body.classList.add('dark-theme');
@@ -2112,18 +2113,18 @@
 
         // Permanent colors for watercolor bleed matching light and dark themes
         const tabColorsLight = [
-            'rgba(22, 163, 74, 0.28)',   // Green
-            'rgba(13, 148, 136, 0.28)',  // Teal
-            'rgba(139, 92, 246, 0.28)',  // Purple
-            'rgba(37, 99, 235, 0.28)',   // Blue
-            'rgba(15, 118, 110, 0.28)'   // Pine Green
+            'rgba(15, 92, 67, 0.20)',    // Forest emerald
+            'rgba(31, 122, 90, 0.20)',   // Jade
+            'rgba(160, 128, 60, 0.24)',  // Antique gold
+            'rgba(92, 120, 100, 0.20)',  // Sage
+            'rgba(133, 105, 44, 0.20)'   // Bronze
         ];
         const tabColorsDark = [
-            'rgba(74, 222, 128, 0.25)',  // Neon Green
-            'rgba(45, 212, 191, 0.25)',  // Neon Teal
-            'rgba(167, 139, 250, 0.25)', // Neon Purple
-            'rgba(96, 165, 250, 0.25)',  // Neon Blue
-            'rgba(52, 211, 153, 0.25)'   // Neon Emerald
+            'rgba(52, 211, 153, 0.22)',  // Emerald
+            'rgba(110, 231, 183, 0.18)', // Mint
+            'rgba(212, 178, 106, 0.26)', // Champagne gold
+            'rgba(167, 196, 176, 0.18)', // Sage
+            'rgba(201, 169, 94, 0.22)'   // Bronze gold
         ];
 
         function parseRGBA(rgbaStr) {
