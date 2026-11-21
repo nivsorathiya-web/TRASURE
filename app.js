@@ -5035,7 +5035,7 @@ function initTheme() {
         isDark = (themeParam === 'dark');
         localStorage.setItem('trasure-theme', themeParam);
     } else {
-        const savedTheme = localStorage.getItem('trasure-theme') || 'light';
+        const savedTheme = localStorage.getItem('trasure-theme') || 'dark';
         isDark = (savedTheme === 'dark');
     }
     
